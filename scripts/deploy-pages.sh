@@ -12,3 +12,4 @@ git -c user.name="$(git -C .. log -1 --format=%an)" -c user.email="$(git -C .. l
   commit -q -m "Deploy $(git -C .. rev-parse --short HEAD)"
 git push -q -f "$remote" gh-pages
 rm -rf .git
+echo "Deployed to https://ghaidaqu.github.io/nova-finops/ (GitHub Pages may take a minute to update)"
