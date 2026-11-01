@@ -36,6 +36,9 @@ npm run install:ci   # تثبيت الحزم
 npm run dev          # خادم التطوير على http://localhost:5173
 npm run lint         # فحص الكود
 npm run build        # بناء نسخة النشر
+npm run deploy:pages # بناء نسخة ثابتة ونشرها على GitHub Pages
 ```
+
+النسخة المنشورة: https://ghaidaqu.github.io/nova-finops/
 
 مبني على [vinext](https://github.com/cloudflare/vinext) (Next.js على Cloudflare Workers). تفاصيل النشر وقاعدة البيانات D1 في [docs/sites-starter.md](docs/sites-starter.md).

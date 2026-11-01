@@ -8,7 +8,9 @@ const routes:Record<string,R>={"/":"home","/login":"login","/signup":"signup","/
 const paths=Object.fromEntries(Object.entries(routes).map(([p,r])=>[r,p])) as Record<R,string>;
 const sar=(n:number)=>new Intl.NumberFormat("en-US").format(n)+" ر.س";
 function Mark(){return <span className="mark"><i/></span>}
-function useRoute(){const[r,setR]=useState<R>("home");useEffect(()=>{const s=()=>setR(routes[location.pathname]||"home");s();addEventListener("popstate",s);return()=>removeEventListener("popstate",s)},[]);return[r,(x:R)=>{history.pushState({},"",paths[x]);setR(x);scrollTo({top:0,behavior:"smooth"})}] as const}
+// Vite base path: "/" under vinext, "/nova-finops/" in the GitHub Pages build.
+const base=import.meta.env.BASE_URL.replace(/\/$/,"");
+function useRoute(){const[r,setR]=useState<R>("home");useEffect(()=>{const s=()=>setR(routes[location.pathname.slice(base.length).replace(/(.)\/$/,"$1")||"/"]||"home");s();addEventListener("popstate",s);return()=>removeEventListener("popstate",s)},[]);return[r,(x:R)=>{history.pushState({},"",base+paths[x]);setR(x);scrollTo({top:0,behavior:"smooth"})}] as const}
 export default function Prototype(){const[r,go]=useRoute();return r==="home"?<MarketingSimple go={go}/>:(["login","signup","forgot"] as R[]).includes(r)?<Auth r={r} go={go}/>:r==="onboarding"?<Onboarding go={go}/>:<Shell r={r} go={go}/>}
 
 function Brand(){return <span className="brand"><Mark/><b>{brand.name}</b></span>}
