@@ -13,7 +13,7 @@
 | `/onboarding` | التهيئة الأولى |
 | `/app` | الرئيسية |
 | `/app/money-flow` | تدفق الأموال |
-| `/app/reconciliation` | مطابقة تطبيقات التوصيل |
+| `/app/reconciliation` | مطابقة المبيعات والمدفوعات والمحاسبة |
 | `/app/analytics` | التحليلات |
 | `/app/customers` · `/app/branches` | العملاء والفروع |
 | `/app/rules` · `/app/alerts` | القواعد والتنبيهات |
