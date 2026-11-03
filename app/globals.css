@@ -44,3 +44,6 @@ body{font-family:"Cairo","SF Arabic","Noto Sans Arabic","Segoe UI",Tahoma,sans-s
 
 /* NOVA palette — matched to the hero illustration */
 :root{--ink:#063f4c;--muted:#6b7e82;--line:#d7eaed;--paper:#f5fbfb;--mint:#d8f0f2;--green:#0b7083;--dark:#063f4c;--red:#c95656;--orange:#d39a45}.simple-site{background:#fbfdfd}.eyebrow{background:#edf8f9;border-color:#d6ecef;color:#0b7083}.core-value-grid article>span{background:#eaf7f8;color:#0b7083}.simple-how li>b{background:#eaf7f8;color:#0b7083}.simple-cta .primary{background:#d8f0f2;color:#063f4c}
+
+/* Use the browser icon as the product mark everywhere. */
+.mark{display:block;object-fit:contain;background:transparent!important;border-radius:0;transform:none!important}.mark i{display:none}

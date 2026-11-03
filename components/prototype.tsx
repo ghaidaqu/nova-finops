@@ -7,7 +7,7 @@ type R="home"|"login"|"signup"|"forgot"|"onboarding"|"overview"|"money"|"reconci
 const routes:Record<string,R>={"/":"home","/login":"login","/signup":"signup","/forgot-password":"forgot","/onboarding":"onboarding","/app":"overview","/app/money-flow":"money","/app/reconciliation":"reconciliation","/app/analytics":"analytics","/app/customers":"customers","/app/branches":"branches","/app/rules":"rules","/app/alerts":"alerts","/app/connections":"connections","/app/reports":"reports","/app/settings":"settings"};
 const paths=Object.fromEntries(Object.entries(routes).map(([p,r])=>[r,p])) as Record<R,string>;
 const sar=(n:number)=>new Intl.NumberFormat("en-US").format(n)+" ر.س";
-function Mark(){return <span className="mark"><i/></span>}
+function Mark(){return <img className="mark" src="/favicon.svg" alt=""/>}
 // Vite base path: "/" under vinext, "/nova-finops/" in the GitHub Pages build.
 const base=import.meta.env.BASE_URL.replace(/\/$/,"");
 function useRoute(){const[r,setR]=useState<R>("home");useEffect(()=>{const s=()=>setR(routes[location.pathname.slice(base.length).replace(/(.)\/$/,"$1")||"/"]||"home");s();addEventListener("popstate",s);return()=>removeEventListener("popstate",s)},[]);return[r,(x:R)=>{history.pushState({},"",base+paths[x]);setR(x);scrollTo({top:0,behavior:"smooth"})}] as const}
