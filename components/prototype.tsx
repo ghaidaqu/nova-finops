@@ -13,7 +13,7 @@ const base=import.meta.env.BASE_URL.replace(/\/$/,"");
 function useRoute(){const[r,setR]=useState<R>("home");useEffect(()=>{const s=()=>setR(routes[location.pathname.slice(base.length).replace(/(.)\/$/,"$1")||"/"]||"home");s();addEventListener("popstate",s);return()=>removeEventListener("popstate",s)},[]);return[r,(x:R)=>{history.pushState({},"",base+paths[x]);setR(x);scrollTo({top:0,behavior:"smooth"})}] as const}
 export default function Prototype(){const[r,go]=useRoute();return r==="home"?<MarketingSimple go={go}/>:(["login","signup","forgot"] as R[]).includes(r)?<Auth r={r} go={go}/>:r==="onboarding"?<Onboarding go={go}/>:<Shell r={r} go={go}/>}
 
-function Brand(){return <span className="brand"><Mark/><b>{brand.name}</b></span>}
+function Brand(){return <span className="brand"><b>{brand.name}</b></span>}
 function MarketingSimple({go}:{go:(r:R)=>void}){return <main className="simple-site">
   <nav className="simple-nav wrap"><button onClick={()=>go("home")}><Brand/></button><div><button onClick={()=>go("login")}>دخول</button></div></nav>
   <section className="simple-hero wrap"><div><span className="eyebrow"><Sparkles/> وضوح مالي بلا تعقيد</span><h1>كل أرقامك.<br/><em>قرار واحد واضح.</em></h1><p>نجمع أرقامك، نطابقها، ونجهّز مطالباتك — من مكان واحد.</p><div className="hero-actions"><button className="primary" onClick={()=>go("overview")}>شاهد المنتج <ArrowLeft/></button><button className="secondary" onClick={()=>go("signup")}>ابدأ مجانًا</button></div><small className="trust"><ShieldCheck/> قراءة وتحليل فقط</small></div><figure className="hero-visual"><img src="/nova-hero-transparent.png" alt="فريق سعودي يدير عملياته المالية من لوحة واحدة"/></figure></section>

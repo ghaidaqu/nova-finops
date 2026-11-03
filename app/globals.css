@@ -49,5 +49,5 @@ body{font-family:"Cairo","SF Arabic","Noto Sans Arabic","Segoe UI",Tahoma,sans-s
 .mark{display:block;object-fit:contain;background:transparent!important;border-radius:0;transform:none!important}.mark i{display:none}
 
 /* Tighter opening composition: no unused space above the hero. */
-.simple-hero{min-height:560px;padding-block:38px 74px;align-items:start}.simple-hero>div{padding-top:42px}.hero-visual{margin-top:-10px}
-@media(max-width:760px){.simple-hero{padding-block:10px 55px;gap:10px}.simple-hero>div{padding-top:0}.hero-visual{margin-top:0}}
+.simple-hero{min-height:520px;padding-block:10px 68px;align-items:start}.simple-hero>div{padding-top:18px}.hero-visual{margin-top:-22px}
+@media(max-width:760px){.simple-hero{padding-block:0 50px;gap:4px}.simple-hero>div{padding-top:0}.hero-visual{margin-top:-22px}}
