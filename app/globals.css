@@ -51,3 +51,4 @@ body{font-family:"Cairo","SF Arabic","Noto Sans Arabic","Segoe UI",Tahoma,sans-s
 /* Tighter opening composition: no unused space above the hero. */
 .simple-hero{min-height:520px;padding-block:10px 68px;align-items:start}.simple-hero>div{padding-top:18px}.hero-visual{margin-top:-22px}
 @media(max-width:760px){.simple-hero{padding-block:0 50px;gap:4px}.simple-hero>div{padding-top:0}.hero-visual{margin-top:-22px}}
+.form-error{color:#b74141!important;font-size:13px!important;margin:0!important}.auth .primary:disabled{opacity:.65;cursor:wait}.upload-file{display:flex!important;align-items:center;justify-content:center;gap:10px;min-height:54px;border:1px dashed var(--green);border-radius:12px;color:var(--green);font-weight:800;cursor:pointer;margin:18px 0}.upload-file input{display:none}.import-note{display:block;color:var(--muted);font-size:12px;line-height:1.8}.connect-modal b{font-family:inherit}
