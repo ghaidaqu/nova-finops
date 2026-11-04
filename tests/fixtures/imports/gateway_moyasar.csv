@@ -1,0 +1,9 @@
+ID,Status,Amount,Fee,Tax,Currency,Refunded,Created At,Description,Source Type,metadata[order_id]
+pay_7Hq2Lx01,paid,294.07,5.88,0.88,SAR,0.00,2026-10-20T09:12:44.000Z,Order ORD-4100,mada,ORD-4100
+pay_7Hq2Lx02,paid,404.82,11.13,1.67,SAR,0.00,2026-10-20T13:40:02.000Z,Order ORD-4101,creditcard,ORD-4101
+pay_7Hq2Lx03,failed,311.32,0.00,0.00,SAR,0.00,2026-10-20T13:45:10.000Z,Order ORD-4102,creditcard,ORD-4102
+pay_7Hq2Lx04,paid,311.32,8.56,1.28,SAR,0.00,2026-10-20T13:47:00.000Z,Order ORD-4102,creditcard,ORD-4102
+pay_7Hq2Lx05,refunded,723.69,14.47,2.17,SAR,723.69,2026-10-20T16:05:31.000Z,Order ORD-4103,applepay,ORD-4103
+pay_7Hq2Lx06,paid,150.00,3.00,0.45,SAR,0.00,2026-10-20T22:30:00.000Z,Order ORD-4104,applepay,ORD-4104
+pay_7Hq2Lx07,authorized,99.00,0.00,0.00,SAR,0.00,2026-10-21T08:00:00.000Z,Order ORD-4105,creditcard,ORD-4105
+pay_7Hq2Lx08,voided,210.00,0.00,0.00,SAR,0.00,2026-10-21T09:00:00.000Z,Order ORD-4106,creditcard,ORD-4106

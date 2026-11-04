@@ -5,6 +5,6 @@ export async function GET(request: Request) {
   try {
     const user = await currentUser(request);
     if (!user) return Response.json({ error: "غير مصرح" }, { status: 401 });
-    return Response.json(await workspaceData(user));
+    return Response.json(await workspaceData(user), { headers: { "Cache-Control": "no-store" } });
   } catch { return Response.json({ error: "تعذر تحميل البيانات." }, { status: 500 }); }
 }

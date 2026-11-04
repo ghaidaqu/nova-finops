@@ -43,7 +43,7 @@ test("gateway export with fee and order id columns", () => {
   assert.equal(mapping.branch, 4);
   const { rows, invalid } = toRows(table, mapping);
   assert.equal(invalid, 1);
-  assert.deepEqual(rows[0], { date: "2026-10-01", amount: 100, reference: "A-1", description: undefined, fee: 3.5, branch: "Online", expected: undefined });
+  assert.deepEqual(rows[0], { date: "2026-10-01", amount: 100, reference: "A-1", description: undefined, fee: 3.5, branch: "Online", method: undefined, expected: undefined });
 });
 
 test("sample files import and reconcile end to end", async () => {

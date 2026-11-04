@@ -1,0 +1,5 @@
+id,Type,Source,Amount,Fee,Net,Currency,Created (UTC),Available On (UTC),Description
+txn_1,charge,ch_txn_1,100.00,3.20,96.80,sar,2026-10-20 10:00,2026-10-20 10:00,charge txn_1
+txn_2,charge,ch_txn_2,250.00,7.55,242.45,sar,2026-10-20 12:00,2026-10-20 12:00,charge txn_2
+txn_3,refund,ch_txn_3,-100.00,0.00,-100.00,sar,2026-10-21 09:00,2026-10-21 09:00,refund txn_3
+txn_4,payout,ch_txn_4,-339.25,0.00,-339.25,sar,2026-10-22 03:00,2026-10-22 03:00,payout txn_4

@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { connections, transactions } from "@/db/schema";
-import { currentUser } from "@/lib/auth";
+import { currentUser, num, readJson, str } from "@/lib/auth";
 import { sourceKinds } from "@/lib/import-rows";
 import type { SourceKind } from "@/lib/reconcile";
 
@@ -12,14 +12,17 @@ export async function PATCH(request: Request) {
   try {
     const user = await currentUser(request);
     if (!user) return Response.json({ error: "غير مصرح" }, { status: 401 });
-    const body = await request.json() as { source?: string; kind?: string; feeBps?: number; feeFixedHalalas?: number; lagDays?: number };
+    const body = await readJson(request);
+    if (body instanceof Response) return body;
     const set = {
       kind: sourceKinds.includes(body.kind as SourceKind) ? body.kind as SourceKind : undefined,
-      feeBps: clamp(body.feeBps, 0, 5000),
-      feeFixedHalalas: clamp(body.feeFixedHalalas, 0, 100000),
-      lagDays: clamp(body.lagDays, 0, 60),
+      feeBps: clamp(num(body.feeBps), 0, 5000),
+      feeFixedHalalas: clamp(num(body.feeFixedHalalas), 0, 100000),
+      lagDays: clamp(num(body.lagDays), 0, 60),
+      settlesVia: ["auto", "payments", "bank"].includes(str(body.settlesVia)) ? str(body.settlesVia) : undefined,
     };
-    await getDb().update(connections).set(set).where(and(eq(connections.workspaceId, user.workspace.id), eq(connections.source, body.source || "")));
+    if (Object.values(set).every((v) => v === undefined)) return Response.json({ error: "لا توجد إعدادات للحفظ." }, { status: 400 });
+    await getDb().update(connections).set(set).where(and(eq(connections.workspaceId, user.workspace.id), eq(connections.source, str(body.source, 60))));
     return Response.json({ ok: true });
   } catch { return Response.json({ error: "تعذر حفظ الإعدادات." }, { status: 500 }); }
 }

@@ -15,6 +15,20 @@
       "when": 1793823687389,
       "tag": "0001_reconciliation",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1793825975120,
+      "tag": "0002_login_security",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1793826484894,
+      "tag": "0003_cash_and_settlement",
+      "breakpoints": true
     }
   ]
 }

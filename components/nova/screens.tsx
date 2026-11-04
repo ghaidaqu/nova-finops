@@ -3,7 +3,7 @@ import { Fragment, useState } from "react";
 import { ArrowLeft, Bell, Check, CircleAlert, Clock, CreditCard, FileSpreadsheet, GitCompareArrows, Landmark, LogOut, Plus, ReceiptText, Settings, ShieldCheck, Sparkles, Trash2, X } from "lucide-react";
 import type { SourceKind } from "@/lib/reconcile";
 import type { IssueStatus, SourceSummary, WorkspaceData } from "@/lib/workspace-data";
-import { counted, formatDay, formatSar, issueLabels, kindHelp, kindLabels, sectors, severityLabels, useNova } from "./data";
+import { callApi, counted, formatDay, formatSar, issueLabels, kindHelp, kindLabels, sectors, severityLabels, useNova } from "./data";
 import { ImportModal } from "./import-modal";
 
 export type Go = (route: "overview" | "reconciliation" | "alerts" | "connections" | "analytics" | "money" | "settings") => void;
@@ -47,6 +47,7 @@ export function Overview({ go, openImport }: { go: Go; openImport: () => void })
       <Head title={`مرحبًا، ${data.user.name}`} copy={t.records ? `قراءة من ${counted(t.records, "عمليات", "عملية")} في ${counted(data.sources.length, "مصادر", "مصدر")}.` : "مساحة عملك جاهزة. أضف أول بياناتك."} />
       {!t.records ? <StartHere openImport={openImport} /> : (
         <>
+          {data.truncated && <div className="smart"><CircleAlert /><span><b>بياناتك كبيرة</b><p>نطابق أحدث {counted(data.truncated.read, "عمليات", "عملية")} من أصل {counted(data.truncated.stored, "عمليات", "عملية")}. احذف المصادر القديمة إن لم تعد تحتاجها.</p></span></div>}
           <div className="simple-kpis">
             <article><small>المبيعات</small><b>{formatSar(t.sales)}</b><span>{counted(t.salesCount, "عمليات", "عملية")} · طابقنا {t.salesCount ? Math.round((t.matchedSales / t.salesCount) * 100) : 0}%</span></article>
             <article><small>وصل فعلًا</small><b>{formatSar(t.received)}</b><span>{t.pending > 0 ? `${formatSar(t.pending)} في الطريق` : "لا شيء معلّق"}</span></article>
@@ -64,6 +65,7 @@ export function Overview({ go, openImport }: { go: Go; openImport: () => void })
             </section>
             <section><header><b>الملخص</b><button onClick={() => go("money")}>تدفق الأموال</button></header>
               <p><span>رسوم ومستقطعات</span><strong>{formatSar(t.fees)}</strong></p>
+              {t.cash > 0 && <p><span>مبيعات نقدية (خارج المطابقة)</span><strong>{formatSar(t.cash)}</strong></p>}
               <p><span>في الطريق</span><strong>{formatSar(t.pending)}</strong></p>
               <p><span>فروقات مفتوحة</span><strong className="red">{formatSar(t.openAmount)}</strong></p>
             </section>
@@ -89,7 +91,7 @@ function IssueDetail({ issue, onAction }: { issue: Issue; onAction: (status: Iss
         <div className="data-table"><table>
           <thead><tr><th>المصدر</th><th>التاريخ</th><th>المرجع</th><th>المبلغ</th><th>الرسوم</th></tr></thead>
           <tbody>{txns.slice(0, 12).map((t) => <tr key={t!.id}><td>{t!.source}</td><td>{formatDay(t!.date)}</td><td>{t!.reference || t!.description || "—"}</td><td>{formatSar(t!.amount)}</td><td>{t!.fee === null ? "—" : formatSar(t!.fee)}</td></tr>)}</tbody>
-        </table>{txns.length > 12 && <small>و{counted(txns.length - 12, "عمليات أخرى", "عملية أخرى")}</small>}</div>
+        </table>{issue.rowCount > Math.min(txns.length, 12) && <small>و{counted(issue.rowCount - Math.min(txns.length, 12), "عمليات أخرى", "عملية أخرى")}</small>}</div>
       )}
       <footer>
         {issue.status === "open" ? <><button className="primary" onClick={() => onAction("resolved")}><Check /> تمت المعالجة</button><button className="secondary" onClick={() => onAction("snoozed")}><Clock /> تأجيل</button></> : <button className="secondary" onClick={() => onAction("open")}>إعادة فتح</button>}
@@ -105,7 +107,7 @@ export function Alerts() {
   if (!data) return <Loading />;
   const list = data.issues.filter((i) => i.status === tab);
   const current = list.find((i) => i.id === selected) || list[0];
-  const count = (s: IssueStatus) => data.issues.filter((i) => i.status === s).length;
+  const count = (s: IssueStatus) => data.issueCounts[s];
   const act = async (status: IssueStatus) => {
     if (!current) return;
     const next = list[list.indexOf(current) + 1];
@@ -119,7 +121,7 @@ export function Alerts() {
       {current ? (
         <div className="inbox">
           <div className="alert-list">{list.map((i) => (
-            <button key={i.id} className={i.id === current.id ? "alert-row active" : "alert-row"} onClick={() => setSelected(i.id)}>
+            <button key={i.id} className={i.id === current.id ? "alert-row active" : "alert-row"} onClick={() => { setSelected(i.id); if (innerWidth < 760) document.querySelector(".alert-detail")?.scrollIntoView({ behavior: "smooth" }); }}>
               <span className={`sev-dot ${i.severity}`}><CircleAlert /></span>
               <div><em>{severityLabels[i.severity]} · {issueLabels[i.type]} · {formatDay(i.date)}</em><b>{i.title}</b><p>{formatSar(i.amount)} · {i.source}</p></div>
             </button>
@@ -209,10 +211,11 @@ export function Analytics({ openImport }: { openImport: () => void }) {
   );
 }
 
-export function MoneyFlow({ go }: { go: Go }) {
+export function MoneyFlow({ go, openImport }: { go: Go; openImport: () => void }) {
   const { data } = useNova();
   if (!data) return <Loading />;
   const t = data.totals;
+  if (!t.records) return <div className="page"><Head title="تدفق الأموال" copy="من المبيعات حتى وصولها لحسابك: أين ذهب كل ريال." /><StartHere openImport={openImport} /></div>;
   const open = data.issues.filter((i) => i.status === "open");
   const sum = (types: string[]) => open.filter((i) => types.includes(i.type)).reduce((s, i) => s + i.amount, 0);
   const steps = [
@@ -241,10 +244,11 @@ function SourceSettings({ source, onClose }: { source: SourceSummary; onClose: (
   const [fee, setFee] = useState(String(source.feeBps / 100));
   const [fixed, setFixed] = useState(String(source.feeFixed / 100));
   const [lag, setLag] = useState(String(source.lagDays));
+  const [via, setVia] = useState(source.settlesVia);
   const [error, setError] = useState("");
   const save = async () => {
     try {
-      await call("PATCH", "/api/sources", { source: source.name, kind, feeBps: Math.round(Number(fee || 0) * 100), feeFixedHalalas: Math.round(Number(fixed || 0) * 100), lagDays: Number(lag || 0) });
+      await call("PATCH", "/api/sources", { source: source.name, kind, feeBps: Math.round(Number(fee || 0) * 100), feeFixedHalalas: Math.round(Number(fixed || 0) * 100), lagDays: Number(lag || 0), settlesVia: via });
       onClose();
     } catch (e) { setError(e instanceof Error ? e.message : "تعذر الحفظ."); }
   };
@@ -264,8 +268,17 @@ function SourceSettings({ source, onClose }: { source: SourceSummary; onClose: (
           <label className="wide">نوع البيانات<select value={kind} onChange={(e) => setKind(e.target.value as SourceKind)}>{(Object.keys(kindLabels) as SourceKind[]).map((k) => <option key={k} value={k}>{kindLabels[k]}</option>)}</select></label>
           <small className="wide">{kindHelp[kind]}</small>
           {kind !== "bank" && <><label>نسبة الرسوم المتفق عليها %<input inputMode="decimal" value={fee} onChange={(e) => setFee(e.target.value)} /></label><label>رسوم ثابتة لكل عملية (ر.س)<input inputMode="decimal" value={fixed} onChange={(e) => setFixed(e.target.value)} /></label></>}
-          <label className="wide">مدة وصول المال بالأيام<input inputMode="numeric" value={lag} onChange={(e) => setLag(e.target.value)} /></label>
-          <small className="wide">{kind === "payments" ? "إذا كان التقرير يحتوي عمود رسوم نقارنه بالنسبة المتفق عليها، وإلا نحسب الرسوم منها." : kind === "sales" ? "تُخصم الرسوم هنا عند المطابقة المباشرة مع البنك (مثل عمولة تطبيقات التوصيل)." : "نعتبر المبالغ الموجبة واردًا والسالبة مصروفات."}</small>
+          {kind === "sales" && (
+            <label className="wide">كيف يصلك مال هذا المصدر؟
+              <select value={via} onChange={(e) => setVia(e.target.value as typeof via)}>
+                <option value="auto">تلقائي</option>
+                <option value="payments">عبر بوابة الدفع أو المنصة</option>
+                <option value="bank">مباشرة إلى البنك (مثل تطبيقات التوصيل والتحويلات)</option>
+              </select>
+            </label>
+          )}
+          <label className="wide">مدة وصول المال بأيام العمل<input inputMode="numeric" value={lag} onChange={(e) => setLag(e.target.value)} /></label>
+          <small className="wide">{kind === "payments" ? "إذا كان التقرير يحتوي عمود رسوم نقارنه بالنسبة المتفق عليها، وإلا نحسب الرسوم منها." : kind === "sales" ? "«تلقائي»: يطابق عبر بوابة الدفع إن وجدت، إلا إذا حددت عمولة هنا فيطابق مع البنك مباشرة بعد خصمها. المبيعات النقدية لا تدخل المطابقة." : "نعتبر المبالغ الموجبة واردًا والسالبة مصروفات."}</small>
         </div>
         {error && <p className="form-error">{error}</p>}
         <div className="modal-actions"><button className="secondary danger" onClick={remove}><Trash2 /> حذف المصدر</button><button className="primary" onClick={save}>حفظ <Check /></button></div>
@@ -331,6 +344,7 @@ export function SettingsPage({ onLogout }: { onLogout: () => void }) {
           <h3>حسابك</h3>
           <p className="account"><b>{data.user.name}</b><small>{data.user.email}</small></p>
           <button className="secondary" onClick={onLogout}><LogOut /> تسجيل الخروج</button>
+          <ChangePassword />
           <h3 className="space">البيانات</h3>
           <p className="muted">{counted(data.totals.records, "عمليات", "عملية")} من {counted(data.sources.length, "مصادر", "مصدر")}.</p>
           <div className="stack">
@@ -340,6 +354,31 @@ export function SettingsPage({ onLogout }: { onLogout: () => void }) {
         </section>
       </div>
     </div>
+  );
+}
+
+function ChangePassword() {
+  const [current, setCurrent] = useState("");
+  const [next, setNext] = useState("");
+  const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
+  const save = async () => {
+    try {
+      await callApi("POST", "/api/auth/password", { current, next });
+      setCurrent("");
+      setNext("");
+      setMessage({ ok: true, text: "تم تغيير كلمة المرور." });
+    } catch (e) { setMessage({ ok: false, text: e instanceof Error ? e.message : "تعذر التغيير." }); }
+  };
+  return (
+    <>
+      <h3 className="space">تغيير كلمة المرور</h3>
+      <div className="import-form">
+        <label>الحالية<input type="password" autoComplete="current-password" value={current} onChange={(e) => setCurrent(e.target.value)} /></label>
+        <label>الجديدة<input type="password" autoComplete="new-password" value={next} onChange={(e) => setNext(e.target.value)} placeholder="8 أحرف على الأقل" /></label>
+      </div>
+      {message && <p className={message.ok ? "import-count" : "form-error"}>{message.text}</p>}
+      <button className="secondary" disabled={!current || next.length < 8} onClick={save}>تغيير</button>
+    </>
   );
 }
 

@@ -1,14 +1,16 @@
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { issueStates } from "@/db/schema";
-import { currentUser } from "@/lib/auth";
+import { currentUser, readJson, str } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
     const user = await currentUser(request);
     if (!user) return Response.json({ error: "غير مصرح" }, { status: 401 });
-    const body = await request.json() as { issueId?: string; status?: string };
-    const issueId = body.issueId?.slice(0, 80) || "";
+    const body = await readJson(request, 10_000);
+    if (body instanceof Response) return body;
+    const issueId = str(body.issueId, 80);
+    if (!issueId) return Response.json({ error: "تنبيه غير معروف." }, { status: 400 });
     const db = getDb();
     if (body.status === "open") await db.delete(issueStates).where(and(eq(issueStates.workspaceId, user.workspace.id), eq(issueStates.issueId, issueId)));
     else if (body.status === "resolved" || body.status === "snoozed") {

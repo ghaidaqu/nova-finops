@@ -7,6 +7,10 @@ export const users = sqliteTable("users", {
   email: text("email").notNull(),
   passwordHash: text("password_hash").notNull(),
   passwordSalt: text("password_salt").notNull(),
+  // Rows created before the iteration count was stored used 150,000.
+  passwordIterations: integer("password_iterations").notNull().default(150000),
+  failedLogins: integer("failed_logins").notNull().default(0),
+  lockedUntil: text("locked_until"),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 }, (table) => [uniqueIndex("users_email_unique").on(table.email)]);
 
@@ -40,6 +44,8 @@ export const connections = sqliteTable("connections", {
   feeFixedHalalas: integer("fee_fixed_halalas").notNull().default(0),
   // How many days money from this source usually takes to arrive.
   lagDays: integer("lag_days").notNull().default(3),
+  // For sales sources: "payments" (through a gateway), "bank" (paid directly) or "auto".
+  settlesVia: text("settles_via").notNull().default("auto"),
   lastSyncAt: text("last_sync_at").notNull().default(sql`CURRENT_TIMESTAMP`),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 }, (table) => [uniqueIndex("connections_workspace_source_unique").on(table.workspaceId, table.source)]);
@@ -56,6 +62,7 @@ export const transactions = sqliteTable("transactions", {
   kind: text("kind").notNull().default("sale"),
   feeHalalas: integer("fee_halalas"),
   branch: text("branch"),
+  method: text("method"),
   // Stable hash of the imported row, so importing the same file twice adds nothing.
   fingerprint: text("fingerprint"),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),

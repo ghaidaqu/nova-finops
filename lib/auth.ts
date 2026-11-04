@@ -12,11 +12,29 @@ export async function digest(value: string) {
   return hex(await crypto.subtle.digest("SHA-256", encoder.encode(value)));
 }
 
-export async function passwordHash(password: string, salt: string) {
+// Cloudflare Workers reject PBKDF2 above 100,000 iterations in production.
+export const PASSWORD_ITERATIONS = 100000;
+
+export async function passwordHash(password: string, salt: string, iterations = PASSWORD_ITERATIONS) {
   const key = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveBits"]);
-  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", hash: "SHA-256", salt: encoder.encode(salt), iterations: 150000 }, key, 256);
+  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", hash: "SHA-256", salt: encoder.encode(salt), iterations }, key, 256);
   return hex(bits);
 }
+
+// Parses a JSON object body. Requiring application/json also blocks cross-site
+// form posts (login CSRF), since browsers can't send that type cross-origin without CORS.
+export async function readJson(request: Request, maxBytes = 15_000_000): Promise<Record<string, unknown> | Response> {
+  if (!request.headers.get("content-type")?.includes("application/json")) return Response.json({ error: "طلب غير مدعوم." }, { status: 415 });
+  if (Number(request.headers.get("content-length") || 0) > maxBytes) return Response.json({ error: "الملف كبير جدًا. قسّمه إلى ملفات أصغر." }, { status: 413 });
+  try {
+    const body = await request.json();
+    if (body && typeof body === "object" && !Array.isArray(body)) return body as Record<string, unknown>;
+  } catch {}
+  return Response.json({ error: "طلب غير صالح." }, { status: 400 });
+}
+
+export const str = (value: unknown, max = 200) => (typeof value === "string" ? value.trim().slice(0, max) : "");
+export const num = (value: unknown) => (typeof value === "number" && Number.isFinite(value) ? value : undefined);
 
 function cookieValue(request: Request, key: string) {
   return request.headers.get("cookie")?.split(";").map((item) => item.trim()).find((item) => item.startsWith(`${key}=`))?.slice(key.length + 1);

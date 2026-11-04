@@ -1,0 +1,4 @@
+Settlement Date,Batch No,Merchant ID,Transactions Count,Net Amount,Gross Amount,MDR Fee,VAT on MDR,Payout Reference
+2026-10-21,B-2041,8ac7a4c9,12,"3,850.20","3,935.47",74.15,11.12,STL-77120
+2026-10-22,B-2042,8ac7a4c9,9,"2,771.05","2,832.40",53.35,8.00,STL-77121
+2026-10-23,B-2043,8ac7a4c9,15,"5,102.88","5,215.68",98.09,14.71,STL-77122

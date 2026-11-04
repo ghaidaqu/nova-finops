@@ -1,0 +1,5 @@
+Order ID,Order Date,Branch,Payment Type,Order Status,Order Amount,Commission (%),Commission Amount,VAT on Commission,Net Payable
+JZ-880101,2026-10-20,Olaya,Online,Delivered,120.00,18%,21.60,3.24,95.16
+JZ-880102,2026-10-20,Olaya,Cash,Delivered,75.50,18%,13.59,2.04,59.87
+JZ-880103,2026-10-20,Malqa,Online,Cancelled,98.00,18%,17.64,2.65,77.71
+JZ-880104,2026-10-21,Malqa,Online,Delivered,210.25,18%,37.84,5.68,166.73

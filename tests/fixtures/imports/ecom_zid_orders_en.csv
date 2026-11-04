@@ -1,0 +1,6 @@
+Order Status,Order #,Order Date,Customer Name,Payment Method,Payment Status,Subtotal,Shipping Fee,VAT,Discount,Order Total
+Completed,#5501,10/05/2026 09:12 PM,Sara,Mada,Paid,260.00,25.00,42.75,0.00,327.75
+Cancelled,#5502,10/09/2026 11:40 AM,Fahad,Visa,Voided,400.00,0.00,60.00,0.00,460.00
+Delivered,#5503,10/11/2026 02:05 PM,Noura,Cash on Delivery,Paid,180.00,25.00,30.75,10.00,225.75
+Completed,#5504,10/21/2026 06:30 PM,Ali,Apple Pay,Paid,620.00,0.00,93.00,0.00,713.00
+Refunded,#5505,10/30/2026 01:15 PM,Reem,Mada,Voided,120.00,25.00,21.75,0.00,166.75

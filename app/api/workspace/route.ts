@@ -1,15 +1,18 @@
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { connections, issueStates, transactions, workspaces } from "@/db/schema";
-import { currentUser } from "@/lib/auth";
+import { currentUser, num, readJson, str } from "@/lib/auth";
 
 export async function PATCH(request: Request) {
   try {
     const user = await currentUser(request);
     if (!user) return Response.json({ error: "غير مصرح" }, { status: 401 });
-    const body = await request.json() as { name?: string; sector?: string; toleranceHalalas?: number };
-    const tolerance = typeof body.toleranceHalalas === "number" && Number.isFinite(body.toleranceHalalas) ? Math.min(100000, Math.max(0, Math.round(body.toleranceHalalas))) : undefined;
-    await getDb().update(workspaces).set({ name: body.name?.trim().slice(0, 80) || undefined, sector: body.sector?.trim().slice(0, 40) || undefined, toleranceHalalas: tolerance }).where(eq(workspaces.id, user.workspace.id));
+    const body = await readJson(request, 10_000);
+    if (body instanceof Response) return body;
+    const toleranceValue = num(body.toleranceHalalas);
+    const set = { name: str(body.name, 80) || undefined, sector: str(body.sector, 40) || undefined, toleranceHalalas: toleranceValue === undefined ? undefined : Math.min(100000, Math.max(0, Math.round(toleranceValue))) };
+    if (Object.values(set).every((v) => v === undefined)) return Response.json({ error: "لا توجد إعدادات للحفظ." }, { status: 400 });
+    await getDb().update(workspaces).set(set).where(eq(workspaces.id, user.workspace.id));
     return Response.json({ ok: true });
   } catch { return Response.json({ error: "تعذر حفظ الإعدادات." }, { status: 500 }); }
 }

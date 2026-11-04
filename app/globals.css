@@ -140,3 +140,8 @@ button.icon{border:1px solid var(--line);background:white;border-radius:9px;widt
 }
 .simple-bottom p>span{display:flex;align-items:center;gap:7px}
 .simple-bottom p>span>svg{color:var(--green);width:16px}
+/* On phones the alert list stays browsable above the selected alert. */
+@media(max-width:900px){
+  .inbox .alert-list{max-height:300px;overflow:auto;border-bottom:1px solid var(--line)}
+  .inbox .alert-row:not(.active){display:flex}
+}

@@ -1,0 +1,903 @@
+[
+ {
+  "file": "bank_alrajhi_ar.csv",
+  "upload": "كشف حساب.csv",
+  "system": "Al Rajhi (AR, debit/credit, key-value header block)",
+  "kind": "bank",
+  "truth": [
+   {
+    "date": "2026-10-05",
+    "amount": 4985.55
+   },
+   {
+    "date": "2026-10-07",
+    "amount": -1240.0
+   },
+   {
+    "date": "2026-10-12",
+    "amount": 3120.4
+   },
+   {
+    "date": "2026-10-15",
+    "amount": -9500.0
+   },
+   {
+    "date": "2026-10-21",
+    "amount": 2350.0
+   },
+   {
+    "date": "2026-10-28",
+    "amount": -23.0
+   }
+  ],
+  "header0": "التاريخ",
+  "expect": {
+   "date": "التاريخ",
+   "debit": "مدين",
+   "credit": "دائن",
+   "description": "تفاصيل العملية"
+  },
+  "manual": null,
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "bank_alrajhi_en_drcr.csv",
+  "upload": "AccountStatement.csv",
+  "system": "Al Rajhi (EN, Amount + Dr/Cr)",
+  "kind": "bank",
+  "truth": [
+   {
+    "date": "2026-10-05",
+    "amount": 4985.55
+   },
+   {
+    "date": "2026-10-07",
+    "amount": -1240.0
+   },
+   {
+    "date": "2026-10-12",
+    "amount": 3120.4
+   },
+   {
+    "date": "2026-10-15",
+    "amount": -9500.0
+   },
+   {
+    "date": "2026-10-21",
+    "amount": 2350.0
+   },
+   {
+    "date": "2026-10-28",
+    "amount": -23.0
+   }
+  ],
+  "header0": "Date",
+  "expect": {
+   "date": "Date",
+   "amount": "Amount",
+   "reference": "Reference No."
+  },
+  "manual": null,
+  "note": "sign lives in Dr/Cr column",
+  "sheet": null
+ },
+ {
+  "file": "bank_snb_en.csv",
+  "upload": "SNB_Transactions_Oct2026.csv",
+  "system": "SNB/AlAhli (EN, '21 Oct 2026' dates)",
+  "kind": "bank",
+  "truth": [
+   {
+    "date": "2026-10-03",
+    "amount": 7820.15
+   },
+   {
+    "date": "2026-10-09",
+    "amount": -612.5
+   },
+   {
+    "date": "2026-10-10",
+    "amount": 4391.97
+   },
+   {
+    "date": "2026-10-18",
+    "amount": -15000.0
+   }
+  ],
+  "header0": "Date",
+  "expect": {
+   "date": "Date",
+   "debit": "Debit",
+   "credit": "Credit",
+   "description": "Transaction Details"
+  },
+  "manual": null,
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "bank_riyad_en_valuedate.csv",
+  "upload": "RB_History_20261031.csv",
+  "system": "Riyad Bank (EN, Value Date + Amount (SAR) + Dr/Cr)",
+  "kind": "bank",
+  "truth": [
+   {
+    "date": "2026-10-05",
+    "amount": 4985.55
+   },
+   {
+    "date": "2026-10-07",
+    "amount": -1240.0
+   },
+   {
+    "date": "2026-10-12",
+    "amount": 3120.4
+   },
+   {
+    "date": "2026-10-15",
+    "amount": -9500.0
+   },
+   {
+    "date": "2026-10-21",
+    "amount": 2350.0
+   },
+   {
+    "date": "2026-10-28",
+    "amount": -23.0
+   }
+  ],
+  "header0": "Posting Date",
+  "expect": {
+   "date": "Posting Date",
+   "amount": "Amount (SAR)",
+   "description": "Narrative"
+  },
+  "manual": null,
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "bank_alinma_ar_semicolon.csv",
+  "upload": "alinma_export.csv",
+  "system": "Alinma (AR, ';', Arabic digits, مدين/دائن type column)",
+  "kind": "bank",
+  "truth": [
+   {
+    "date": "2026-10-05",
+    "amount": 4985.55
+   },
+   {
+    "date": "2026-10-07",
+    "amount": -1240.0
+   },
+   {
+    "date": "2026-10-12",
+    "amount": 3120.4
+   },
+   {
+    "date": "2026-10-15",
+    "amount": -9500.0
+   },
+   {
+    "date": "2026-10-21",
+    "amount": 2350.0
+   },
+   {
+    "date": "2026-10-28",
+    "amount": -23.0
+   }
+  ],
+  "header0": "تاريخ العملية",
+  "expect": {
+   "date": "تاريخ العملية",
+   "amount": "المبلغ",
+   "description": "البيان"
+  },
+  "manual": {
+   "date": "تاريخ العملية",
+   "amount": "المبلغ",
+   "description": "البيان"
+  },
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "bank_sab_tab.txt",
+  "upload": "TransactionHistory.txt",
+  "system": "SAB (tab .txt, 'DR'/'CR' amount suffix)",
+  "kind": "bank",
+  "truth": [
+   {
+    "date": "2026-10-05",
+    "amount": 4985.55
+   },
+   {
+    "date": "2026-10-07",
+    "amount": -1240.0
+   },
+   {
+    "date": "2026-10-12",
+    "amount": 3120.4
+   },
+   {
+    "date": "2026-10-15",
+    "amount": -9500.0
+   },
+   {
+    "date": "2026-10-21",
+    "amount": 2350.0
+   },
+   {
+    "date": "2026-10-28",
+    "amount": -23.0
+   }
+  ],
+  "header0": "Transaction Date",
+  "expect": {
+   "date": "Transaction Date",
+   "amount": "Amount",
+   "reference": "Reference"
+  },
+  "manual": null,
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "bank_hijri.csv",
+  "upload": "حركات الحساب.csv",
+  "system": "Hijri-only dates (1448/04/24, ٢٤/٠٤/١٤٤٨)",
+  "kind": "bank",
+  "truth": [
+   {
+    "date": "2026-10-05",
+    "amount": 4985.55
+   },
+   {
+    "date": "2026-10-07",
+    "amount": -1240.0
+   },
+   {
+    "date": "2026-10-12",
+    "amount": 3120.4
+   },
+   {
+    "date": "2026-10-15",
+    "amount": -9500.0
+   },
+   {
+    "date": "2026-10-21",
+    "amount": 2350.0
+   },
+   {
+    "date": "2026-10-28",
+    "amount": -23.0
+   }
+  ],
+  "header0": "التاريخ",
+  "expect": {
+   "date": "التاريخ",
+   "debit": "مدين",
+   "credit": "دائن"
+  },
+  "manual": null,
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "bank_long_preamble.csv",
+  "upload": "Statement_Oct.csv",
+  "system": "11-line preamble before header",
+  "kind": "bank",
+  "truth": [
+   {
+    "date": "2026-10-05",
+    "amount": 4985.55
+   },
+   {
+    "date": "2026-10-07",
+    "amount": -1240.0
+   },
+   {
+    "date": "2026-10-12",
+    "amount": 3120.4
+   },
+   {
+    "date": "2026-10-15",
+    "amount": -9500.0
+   },
+   {
+    "date": "2026-10-21",
+    "amount": 2350.0
+   },
+   {
+    "date": "2026-10-28",
+    "amount": -23.0
+   }
+  ],
+  "header0": "Date",
+  "expect": {
+   "date": "Date",
+   "debit": "Debit",
+   "credit": "Credit"
+  },
+  "manual": null,
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "bank_windows1256.csv",
+  "upload": "كشف حساب.csv",
+  "system": "Windows-1256 Arabic CSV",
+  "kind": "bank",
+  "truth": [
+   {
+    "date": "2026-10-05",
+    "amount": 4985.55
+   },
+   {
+    "date": "2026-10-07",
+    "amount": -1240.0
+   },
+   {
+    "date": "2026-10-12",
+    "amount": 3120.4
+   },
+   {
+    "date": "2026-10-15",
+    "amount": -9500.0
+   },
+   {
+    "date": "2026-10-21",
+    "amount": 2350.0
+   },
+   {
+    "date": "2026-10-28",
+    "amount": -23.0
+   }
+  ],
+  "header0": null,
+  "expect": {
+   "date": "التاريخ",
+   "debit": "مدين",
+   "credit": "دائن"
+  },
+  "manual": null,
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "bank_utf16_unicode_text.txt",
+  "upload": "Statement.txt",
+  "system": "Excel 'Unicode Text' UTF-16LE",
+  "kind": "bank",
+  "truth": [
+   {
+    "date": "2026-10-05",
+    "amount": 4985.55
+   },
+   {
+    "date": "2026-10-07",
+    "amount": -1240.0
+   },
+   {
+    "date": "2026-10-12",
+    "amount": 3120.4
+   },
+   {
+    "date": "2026-10-15",
+    "amount": -9500.0
+   },
+   {
+    "date": "2026-10-21",
+    "amount": 2350.0
+   },
+   {
+    "date": "2026-10-28",
+    "amount": -23.0
+   }
+  ],
+  "header0": null,
+  "expect": {
+   "date": "Date",
+   "debit": "Debit",
+   "credit": "Credit"
+  },
+  "manual": null,
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "gateway_moyasar.csv",
+  "upload": "payments-2026-10-31.csv",
+  "system": "Moyasar payments",
+  "kind": "payments",
+  "truth": [
+   {
+    "date": "2026-10-20",
+    "amount": 294.07
+   },
+   {
+    "date": "2026-10-20",
+    "amount": 404.82
+   },
+   {
+    "date": "2026-10-20",
+    "amount": 311.32
+   },
+   {
+    "date": "2026-10-21",
+    "amount": 150.0
+   }
+  ],
+  "header0": "ID",
+  "expect": {
+   "date": "Created At",
+   "amount": "Amount",
+   "fee": "Fee",
+   "reference": "metadata[order_id]"
+  },
+  "manual": null,
+  "note": "fee should include Tax (VAT on fee)",
+  "sheet": null
+ },
+ {
+  "file": "gateway_tap.csv",
+  "upload": "charges_export.csv",
+  "system": "Tap charges",
+  "kind": "payments",
+  "truth": [
+   {
+    "date": "2026-10-20",
+    "amount": 294.07
+   },
+   {
+    "date": "2026-10-20",
+    "amount": 404.82
+   },
+   {
+    "date": "2026-10-21",
+    "amount": 150.0
+   }
+  ],
+  "header0": "Charge ID",
+  "expect": {
+   "date": "Date",
+   "amount": "Amount",
+   "fee": "Fees",
+   "reference": "Reference"
+  },
+  "manual": null,
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "gateway_hyperpay_settlement.csv",
+  "upload": "Settlement_Report_Oct2026.csv",
+  "system": "HyperPay settlement (Net before Gross, 'MDR Fee')",
+  "kind": "payments",
+  "truth": [
+   {
+    "date": "2026-10-21",
+    "amount": 3935.47
+   },
+   {
+    "date": "2026-10-22",
+    "amount": 2832.4
+   },
+   {
+    "date": "2026-10-23",
+    "amount": 5215.68
+   }
+  ],
+  "header0": "Settlement Date",
+  "expect": {
+   "date": "Settlement Date",
+   "amount": "Gross Amount",
+   "fee": "MDR Fee",
+   "reference": "Payout Reference"
+  },
+  "manual": null,
+  "note": "reconcile subtracts fee from amount, so amount must be gross",
+  "sheet": null
+ },
+ {
+  "file": "gateway_stripe_balance.csv",
+  "upload": "balance_history.csv",
+  "system": "Stripe-like balance history",
+  "kind": "payments",
+  "truth": [
+   {
+    "date": "2026-10-20",
+    "amount": 100.0
+   },
+   {
+    "date": "2026-10-20",
+    "amount": 250.0
+   },
+   {
+    "date": "2026-10-21",
+    "amount": -100.0
+   },
+   {
+    "date": "2026-10-22",
+    "amount": -339.25
+   }
+  ],
+  "header0": "id",
+  "expect": {
+   "date": "Created (UTC)",
+   "amount": "Amount",
+   "fee": "Fee",
+   "reference": "id"
+  },
+  "manual": null,
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "ecom_salla_orders_ar.csv",
+  "upload": "الطلبات.csv",
+  "system": "Salla orders (AR)",
+  "kind": "sales",
+  "truth": [
+   {
+    "date": "2026-10-20",
+    "amount": 327.75
+   },
+   {
+    "date": "2026-10-20",
+    "amount": 225.75
+   },
+   {
+    "date": "2026-10-21",
+    "amount": 391.0
+   }
+  ],
+  "header0": "رقم الطلب",
+  "expect": {
+   "date": "تاريخ الطلب",
+   "amount": "الإجمالي",
+   "reference": "رقم الطلب"
+  },
+  "manual": null,
+  "note": "رسوم الشحن is charged to the customer, not a cost",
+  "sheet": null
+ },
+ {
+  "file": "ecom_zid_orders_en.csv",
+  "upload": "orders_export.csv",
+  "system": "Zid orders (EN, MM/DD/YYYY)",
+  "kind": "sales",
+  "truth": [
+   {
+    "date": "2026-10-05",
+    "amount": 327.75
+   },
+   {
+    "date": "2026-10-11",
+    "amount": 225.75
+   },
+   {
+    "date": "2026-10-21",
+    "amount": 713.0
+   }
+  ],
+  "header0": "Order Status",
+  "expect": {
+   "date": "Order Date",
+   "amount": "Order Total",
+   "reference": "Order #"
+  },
+  "manual": null,
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "pos_foodics_orders.csv",
+  "upload": "orders_2026-10.csv",
+  "system": "Foodics orders (CSV)",
+  "kind": "sales",
+  "truth": [
+   {
+    "date": "2026-10-20",
+    "amount": 115.0
+   },
+   {
+    "date": "2026-10-20",
+    "amount": 82.8
+   },
+   {
+    "date": "2026-10-21",
+    "amount": 230.0
+   }
+  ],
+  "header0": "Reference",
+  "expect": {
+   "date": "Business Date",
+   "amount": "Total Price",
+   "reference": "Reference",
+   "branch": "Branch"
+  },
+  "manual": null,
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "delivery_jahez.csv",
+  "upload": "Jahez_Orders_Report.csv",
+  "system": "Jahez-style delivery report",
+  "kind": "payments",
+  "truth": [
+   {
+    "date": "2026-10-20",
+    "amount": 120.0
+   },
+   {
+    "date": "2026-10-20",
+    "amount": 75.5
+   },
+   {
+    "date": "2026-10-21",
+    "amount": 210.25
+   }
+  ],
+  "header0": "Order ID",
+  "expect": {
+   "date": "Order Date",
+   "amount": "Order Amount",
+   "fee": "Commission Amount",
+   "reference": "Order ID",
+   "branch": "Branch"
+  },
+  "manual": null,
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "delivery_hungerstation_ar.csv",
+  "upload": "تقرير الطلبات.csv",
+  "system": "HungerStation-style (AR digits)",
+  "kind": "payments",
+  "truth": [
+   {
+    "date": "2026-10-20",
+    "amount": 1234.5
+   },
+   {
+    "date": "2026-10-21",
+    "amount": 142.75
+   }
+  ],
+  "header0": "رقم الطلب",
+  "expect": {
+   "date": "تاريخ الطلب",
+   "amount": "قيمة الطلب",
+   "fee": "مبلغ العمولة",
+   "reference": "رقم الطلب",
+   "branch": "الفرع"
+  },
+  "manual": null,
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "acct_qoyod_invoices_ar.csv",
+  "upload": "فواتير المبيعات.csv",
+  "system": "Qoyod invoices (AR)",
+  "kind": "sales",
+  "truth": [
+   {
+    "date": "2026-10-20",
+    "amount": 1150.0
+   },
+   {
+    "date": "2026-10-20",
+    "amount": 2300.0
+   },
+   {
+    "date": "2026-10-21",
+    "amount": 575.0
+   },
+   {
+    "date": "2026-10-23",
+    "amount": -575.0
+   }
+  ],
+  "header0": "رقم الفاتورة",
+  "expect": {
+   "date": "تاريخ الإصدار",
+   "amount": "الإجمالي",
+   "reference": "رقم الفاتورة"
+  },
+  "manual": null,
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "acct_wafeq_invoices_en.csv",
+  "upload": "invoices.csv",
+  "system": "Wafeq invoices (EN, 'Oct 21, 2026')",
+  "kind": "sales",
+  "truth": [
+   {
+    "date": "2026-10-21",
+    "amount": 1150.0
+   },
+   {
+    "date": "2026-10-22",
+    "amount": 2300.0
+   },
+   {
+    "date": "2026-10-23",
+    "amount": 575.0
+   }
+  ],
+  "header0": "Invoice Number",
+  "expect": {
+   "date": "Invoice Date",
+   "amount": "Total",
+   "reference": "Invoice Number"
+  },
+  "manual": null,
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "generic_messy.csv",
+  "upload": "export.csv",
+  "system": "Generic messy CSV (quoted newlines, amount spellings)",
+  "kind": "sales",
+  "truth": [
+   {
+    "date": "2026-10-01",
+    "amount": 1234.5
+   },
+   {
+    "date": "2026-10-02",
+    "amount": -150.0
+   },
+   {
+    "date": "2026-10-03",
+    "amount": -75.0
+   },
+   {
+    "date": "2026-10-05",
+    "amount": 1234.5
+   },
+   {
+    "date": "2026-10-06",
+    "amount": -200.0
+   },
+   {
+    "date": "2026-10-07",
+    "amount": 99.95
+   },
+   {
+    "date": "2026-10-08",
+    "amount": 250.0
+   },
+   {
+    "date": "2026-10-09",
+    "amount": 500.0
+   },
+   {
+    "date": "2026-10-10",
+    "amount": 123.45
+   },
+   {
+    "date": "2026-10-11",
+    "amount": 300.0
+   },
+   {
+    "date": "2026-10-12",
+    "amount": 1234.5
+   }
+  ],
+  "header0": "Date",
+  "expect": {
+   "date": "Date",
+   "amount": "Amount",
+   "reference": "Reference",
+   "description": "Description"
+  },
+  "manual": null,
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "bank_snb_statement.xlsx",
+  "upload": "SNB_Statement.xlsx",
+  "system": "SNB statement .xlsx (date cells, 2-cell title row)",
+  "kind": "bank",
+  "truth": [
+   {
+    "date": "2026-10-03",
+    "amount": 7820.15
+   },
+   {
+    "date": "2026-10-09",
+    "amount": -612.5
+   },
+   {
+    "date": "2026-10-10",
+    "amount": 4391.97
+   },
+   {
+    "date": "2026-10-18",
+    "amount": -15000.0
+   }
+  ],
+  "header0": "التاريخ",
+  "expect": {
+   "date": "التاريخ",
+   "debit": "مدين",
+   "credit": "دائن",
+   "reference": "المرجع",
+   "description": "الوصف"
+  },
+  "manual": null,
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "pos_foodics_orders.xlsx",
+  "upload": "Orders.xlsx",
+  "system": "Foodics orders .xlsx",
+  "kind": "sales",
+  "truth": [
+   {
+    "date": "2026-10-20",
+    "amount": 115.0
+   },
+   {
+    "date": "2026-10-20",
+    "amount": 82.8
+   },
+   {
+    "date": "2026-10-21",
+    "amount": 51.75
+   }
+  ],
+  "header0": "Reference",
+  "expect": {
+   "date": "Business Date",
+   "amount": "Total Price",
+   "reference": "Reference",
+   "branch": "Branch"
+  },
+  "manual": null,
+  "note": "",
+  "sheet": null
+ },
+ {
+  "file": "delivery_keeta_settlement.xlsx",
+  "upload": "Keeta_Settlement_Oct.xlsx",
+  "system": "Keeta-style .xlsx (Summary sheet first)",
+  "kind": "payments",
+  "truth": [
+   {
+    "date": "2026-10-20",
+    "amount": 140.0
+   },
+   {
+    "date": "2026-10-20",
+    "amount": 210.5
+   },
+   {
+    "date": "2026-10-20",
+    "amount": 95.0
+   }
+  ],
+  "header0": "Order No.",
+  "expect": {
+   "date": "Order Time",
+   "amount": "Item Total",
+   "fee": "Commission",
+   "reference": "Order No."
+  },
+  "manual": null,
+  "note": "",
+  "sheet": "Orders"
+ }
+]

@@ -1,0 +1,12 @@
+The Saudi National Bank
+Statement of Account
+Account Number: 10000012345678
+
+Date,Transaction Details,Debit,Credit,Balance
+01 Oct 2026,Opening Balance,,,"50,000.00"
+03 Oct 2026,POS SETTLEMENT MADA 0310,,"7,820.15","57,820.15"
+09 Oct 2026,SADAD - STC,612.50,,"57,207.65"
+10 Oct 2026,TRANSFER FROM MOYASAR PAYOUT P-1009,,"4,391.97","61,599.62"
+18 Oct 2026,RENT OCT 2026,"15,000.00",,"46,599.62"
+31 Oct 2026,Closing Balance,,,"46,599.62"
+Total,,"15,612.50","12,212.12",

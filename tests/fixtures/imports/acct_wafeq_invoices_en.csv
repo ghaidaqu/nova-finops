@@ -1,0 +1,4 @@
+Invoice Number,Reference,Contact,Invoice Date,Due Date,Status,Subtotal,VAT,Total,Amount Paid,Amount Due
+INV-00051,PO-77,Horizon Co.,"Oct 21, 2026","Nov 20, 2026",Paid,"1,000.00",150.00,"1,150.00","1,150.00",0.00
+INV-00052,,Binaa Est.,"Oct 22, 2026","Nov 21, 2026",Sent,"2,000.00",300.00,"2,300.00",0.00,"2,300.00"
+INV-00053,,Reem Co.,"Oct 23, 2026","Nov 7, 2026",Overdue,500.00,75.00,575.00,0.00,575.00

@@ -1,0 +1,14 @@
+﻿Date,Reference,Description,Amount
+2026-10-01,R1,"Line one
+line two","SAR 1,234.50"
+2026-10-02,R2,"Refund, partial",150.00-
+2026-10-03,R3,Adjustment,(75.00)
+2026-10-04,R4,Empty amount,
+2026-10-05,R5,S.R. prefix,"S.R. 1,234.50"
+2026-10-06,R6,Unicode minus,−200.00
+2026-10-07,R7,"Quote ""inside"" field",99.95
+2026-10-08,R8,Riyal word,250 ريال
+2026-10-09,R9,New riyal sign,⃁ 500.00
+2026-10-10,R10,Arabic decimal,١٢٣٫٤٥
+2026-10-11,R11,Plus sign,+300.00
+2026-10-12,R12,Comma decimal,"1.234,50"
