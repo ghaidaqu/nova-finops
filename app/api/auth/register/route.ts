@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     const workspace = { id: crypto.randomUUID(), ownerId: id, name: workspaceName };
     await db.insert(workspaces).values(workspace);
     const token = await createSession(id);
-    return Response.json({ user: { name, email }, workspace: { id: workspace.id, name: workspace.name } }, { status: 201, headers: { "Set-Cookie": sessionCookie(token) } });
+    return Response.json({ user: { name, email }, workspace: { id: workspace.id, name: workspace.name } }, { status: 201, headers: { "Set-Cookie": sessionCookie(token, request) } });
   } catch {
     return Response.json({ error: "تعذر إنشاء الحساب الآن. حاولي مرة أخرى." }, { status: 500 });
   }

@@ -42,6 +42,13 @@ export async function createSession(userId: string) {
   return token;
 }
 
-export function sessionCookie(token: string) {
-  return `nova_session=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=1209600`;
+// Secure only over https, so local http previews (including Safari) keep the session.
+export function sessionCookie(token: string, request: Request, maxAge = 1209600) {
+  const secure = new URL(request.url).protocol === "https:" ? " Secure;" : "";
+  return `nova_session=${token}; Path=/; HttpOnly;${secure} SameSite=Lax; Max-Age=${maxAge}`;
+}
+
+export async function endSession(request: Request) {
+  const token = cookieValue(request, "nova_session");
+  if (token) await getDb().delete(sessions).where(eq(sessions.tokenHash, await digest(token)));
 }
