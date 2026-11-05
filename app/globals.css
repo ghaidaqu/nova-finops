@@ -132,7 +132,6 @@ button.icon{border:1px solid var(--line);background:white;border-radius:9px;widt
 }
 
 .simple-site{background:#fcfaf7}
-.simple-site>.core-value,.simple-site>.simple-how,.simple-site>.simple-pricing,.simple-site>.simple-cta,.simple-site>.simple-footer{display:none}
 
 @keyframes hero-card-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
@@ -249,3 +248,13 @@ body{font-family:"Cairo",sans-serif;font-size:var(--body);line-height:1.65}
 .simple-bottom p .link{border:0;background:none;color:var(--green);padding:0;font:inherit;font-size:13px}
 .hero-note,.hero-note *{line-height:1.35}
 @media(max-width:760px){.hero-copy .eyebrow{font-size:11px;white-space:nowrap}}
+/* Automatic connections */
+.simple-connect-grid.integrations>button{cursor:pointer}
+.simple-connect-grid.integrations>button>svg{color:#9aa8a5}
+.simple-connect-grid.integrations>button.linked{border-color:#bfe0d4}
+.simple-connect-grid.integrations>button.linked>svg{color:var(--green)}
+.simple-connect-grid.integrations>button.error{border-color:#efc7c0}
+.simple-connect-grid.integrations>button.error>svg,.simple-connect-grid.integrations>button.error small{color:var(--red)}
+.simple-connect-grid.integrations small{color:var(--muted)}
+.simple-connect-grid.integrations .linked small{color:var(--green)}
+a.primary.full{display:flex;justify-content:center;text-decoration:none;margin-top:14px}
