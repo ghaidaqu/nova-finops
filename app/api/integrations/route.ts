@@ -1,0 +1,71 @@
+import { and, eq } from "drizzle-orm";
+import { getDb } from "@/db";
+import { integrations } from "@/db/schema";
+import { currentUser, readJson, str } from "@/lib/auth";
+import { providerList, providers, ProviderError, type ProviderId } from "@/lib/integrations/providers";
+import { oauthClient, originOf, syncIntegration } from "@/lib/integrations/sync";
+import { setting } from "@/lib/env";
+import { encryptJson } from "@/lib/secrets";
+
+const noStore = { "Cache-Control": "no-store" };
+
+// Providers with this workspace's connection state. Credentials never leave the server.
+export async function GET(request: Request) {
+  try {
+    const user = await currentUser(request);
+    if (!user) return Response.json({ error: "غير مصرح" }, { status: 401 });
+    const rows = await getDb().select().from(integrations).where(eq(integrations.workspaceId, user.workspace.id));
+    const origin = originOf(request);
+    const encryption = Boolean(setting("NOVA_SECRET_KEY"));
+    return Response.json({
+      encryption,
+      providers: providerList.map((p) => {
+        const row = rows.find((r) => r.provider === p.id);
+        return {
+          id: p.id, name: p.name, category: p.category, auth: p.auth, keyLabel: p.keyLabel, keyHelp: p.keyHelp, maturity: p.maturity,
+          available: encryption && (p.auth === "key" || Boolean(oauthClient(p.id, origin))),
+          connection: row ? { status: row.status, lastSyncAt: row.lastSyncAt, lastError: row.lastError } : null,
+        };
+      }),
+    }, { headers: noStore });
+  } catch { return Response.json({ error: "تعذر تحميل الربط." }, { status: 500 }); }
+}
+
+// Connect a key-based provider: check the key, store it encrypted, then pull the last 90 days.
+export async function POST(request: Request) {
+  try {
+    const user = await currentUser(request);
+    if (!user) return Response.json({ error: "غير مصرح" }, { status: 401 });
+    const body = await readJson(request, 10_000);
+    if (body instanceof Response) return body;
+    const provider = providers[str(body.provider, 20) as ProviderId];
+    const key = str(body.key, 500);
+    if (!provider || provider.auth !== "key") return Response.json({ error: "مزود غير معروف." }, { status: 400 });
+    if (!key) return Response.json({ error: "أدخل المفتاح." }, { status: 400 });
+    if (!setting("NOVA_SECRET_KEY")) return Response.json({ error: "الربط غير مفعّل على الخادم بعد (مفتاح التشفير غير مضبوط)." }, { status: 503 });
+    const today = new Date().toISOString().slice(0, 10);
+    try {
+      await provider.pull({ key }, today, today);
+    } catch (e) {
+      return Response.json({ error: e instanceof ProviderError ? e.message : "تعذر التحقق من المفتاح." }, { status: 400 });
+    }
+    const db = getDb();
+    const credentials = await encryptJson({ key });
+    await db.insert(integrations).values({ id: crypto.randomUUID(), workspaceId: user.workspace.id, provider: provider.id, source: provider.name, credentials })
+      .onConflictDoUpdate({ target: [integrations.workspaceId, integrations.provider], set: { credentials, status: "connected", lastError: null } });
+    const [row] = await db.select().from(integrations).where(and(eq(integrations.workspaceId, user.workspace.id), eq(integrations.provider, provider.id))).limit(1);
+    const result = await syncIntegration(row, originOf(request));
+    return Response.json(result.ok ? { ok: true, imported: result.imported } : { ok: true, imported: 0, warning: result.error });
+  } catch { return Response.json({ error: "تعذر الربط الآن." }, { status: 500 }); }
+}
+
+// Disconnect: forget the credentials. Data already imported stays (delete it from its source).
+export async function DELETE(request: Request) {
+  try {
+    const user = await currentUser(request);
+    if (!user) return Response.json({ error: "غير مصرح" }, { status: 401 });
+    const provider = new URL(request.url).searchParams.get("provider") || "";
+    await getDb().delete(integrations).where(and(eq(integrations.workspaceId, user.workspace.id), eq(integrations.provider, provider)));
+    return Response.json({ ok: true });
+  } catch { return Response.json({ error: "تعذر فصل الربط." }, { status: 500 }); }
+}

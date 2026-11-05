@@ -1,7 +1,7 @@
 import { count, desc, eq, max, min, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { connections, issueStates, transactions, workspaces } from "@/db/schema";
-import type { CurrentUser } from "@/lib/auth";
+import { isAdmin, type CurrentUser } from "@/lib/auth";
 import { reconcile, type Issue, type SettlesVia, type SourceKind, type Txn } from "@/lib/reconcile";
 
 export type IssueStatus = "open" | "resolved" | "snoozed";
@@ -12,7 +12,7 @@ export type TxnView = { id: string; source: string; date: string; amount: number
 
 // Everything the app screens need, computed in one pass. Amounts are in halalas.
 export type WorkspaceData = {
-  user: { name: string; email: string };
+  user: { name: string; email: string; admin: boolean };
   workspace: { name: string; sector: string | null; tolerance: number };
   sources: SourceSummary[];
   totals: { records: number; sales: number; salesCount: number; cash: number; received: number; fees: number; expenses: number; pending: number; matchedSales: number; openIssues: number; openAmount: number };
@@ -91,7 +91,7 @@ export async function workspaceData(user: CurrentUser): Promise<WorkspaceData> {
   });
 
   return {
-    user: { name: user.name, email: user.email },
+    user: { name: user.name, email: user.email, admin: isAdmin(user) },
     workspace: { name: workspace.name, sector: workspace.sector, tolerance: workspace.toleranceHalalas },
     sources,
     totals: { records: stored, ...result.totals, openIssues: open.length, openAmount: open.filter((i) => i.type !== "unknown").reduce((s, i) => s + i.amount, 0) },

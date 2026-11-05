@@ -29,6 +29,13 @@
       "when": 1793826484894,
       "tag": "0003_cash_and_settlement",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1793908699117,
+      "tag": "0004_integrations",
+      "breakpoints": true
     }
   ]
 }

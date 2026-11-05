@@ -75,3 +75,29 @@ export const issueStates = sqliteTable("issue_states", {
   status: text("status").notNull(),
   updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 }, (table) => [primaryKey({ columns: [table.workspaceId, table.issueId] })]);
+
+// Automatic connections to outside systems. Credentials are encrypted (lib/secrets.ts).
+export const integrations = sqliteTable("integrations", {
+  id: text("id").primaryKey(),
+  workspaceId: text("workspace_id").notNull().references(() => workspaces.id),
+  provider: text("provider").notNull(),
+  // The source the synced rows are imported into (same as a file import).
+  source: text("source").notNull(),
+  credentials: text("credentials").notNull(),
+  status: text("status").notNull().default("connected"),
+  lastError: text("last_error"),
+  lastSyncAt: text("last_sync_at"),
+  // Day up to which data has been pulled; the next sync re-reads a few days before it.
+  syncedThrough: text("synced_through"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+}, (table) => [uniqueIndex("integrations_workspace_provider_unique").on(table.workspaceId, table.provider)]);
+
+// Password reset requests, completed by an owner-issued one-time link (no email service yet).
+export const passwordResets = sqliteTable("password_resets", {
+  id: text("id").primaryKey(),
+  email: text("email").notNull(),
+  tokenHash: text("token_hash"),
+  requestedAt: text("requested_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  expiresAt: text("expires_at"),
+  usedAt: text("used_at"),
+});

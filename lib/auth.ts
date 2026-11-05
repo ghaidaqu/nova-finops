@@ -1,6 +1,7 @@
 import { and, eq, gt } from "drizzle-orm";
 import { getDb } from "@/db";
 import { sessions, users, workspaces } from "@/db/schema";
+import { setting } from "@/lib/env";
 
 const encoder = new TextEncoder();
 
@@ -39,6 +40,9 @@ export const num = (value: unknown) => (typeof value === "number" && Number.isFi
 function cookieValue(request: Request, key: string) {
   return request.headers.get("cookie")?.split(";").map((item) => item.trim()).find((item) => item.startsWith(`${key}=`))?.slice(key.length + 1);
 }
+
+// Owners of this NOVA install (comma-separated NOVA_ADMIN_EMAILS) can answer reset requests.
+export const isAdmin = (user: { email: string }) => (setting("NOVA_ADMIN_EMAILS") || "").toLowerCase().split(",").map((e) => e.trim()).includes(user.email.toLowerCase());
 
 export type CurrentUser = { id: string; name: string; email: string; workspace: { id: string; name: string } };
 

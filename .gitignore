@@ -58,3 +58,6 @@ next-env.d.ts
 # Exported site snapshots
 *.zip
 /dist-pages/
+
+# Local secrets for the Cloudflare dev server
+.dev.vars

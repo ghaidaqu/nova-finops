@@ -45,7 +45,13 @@ export function NovaProvider({ children, onUnauthorized }: { children: React.Rea
     [onUnauthorized],
   );
   useEffect(() => {
-    refresh();
+    // Load, then pull from connected systems not refreshed in the last few hours.
+    refresh().then(() =>
+      callApi("POST", "/api/integrations/sync", { stale: true }).then(
+        (result) => { if (Number(result.imported) > 0) refresh(); },
+        () => {},
+      ),
+    );
   }, [refresh]);
   const call = useCallback(async (method: string, url: string, body?: unknown) => {
     const result = await callApi(method, url, body);

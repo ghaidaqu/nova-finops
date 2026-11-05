@@ -1,6 +1,6 @@
 "use client";
-import { Fragment, useState } from "react";
-import { ArrowLeft, Bell, Check, CircleAlert, Clock, CreditCard, FileSpreadsheet, GitCompareArrows, Landmark, LogOut, Plus, ReceiptText, Settings, ShieldCheck, Sparkles, Trash2, TrendingDown, X } from "lucide-react";
+import { Fragment, useCallback, useEffect, useState } from "react";
+import { ArrowLeft, Bell, Check, CircleAlert, Clock, CreditCard, FileSpreadsheet, GitCompareArrows, Landmark, LogOut, Plus, ReceiptText, RefreshCw, Settings, ShieldCheck, Sparkles, Trash2, TrendingDown, X, Zap } from "lucide-react";
 import type { SourceKind } from "@/lib/reconcile";
 import type { IssueStatus, SourceSummary, WorkspaceData } from "@/lib/workspace-data";
 import { callApi, counted, formatDay, formatSar, issueLabels, kindHelp, kindLabels, sectors, severityLabels, useNova } from "./data";
@@ -331,10 +331,110 @@ export function Sources({ openImport }: { openImport: () => void }) {
           </article>
         ))}</section>
       ) : <StartHere openImport={openImport} />}
-      <h3 className="soon-title">الربط التلقائي (قريبًا)</h3>
-      <section className="simple-connect-grid soon">{["Salla", "Zid", "Foodics", "Moyasar", "Tap", "Qoyod", "Wafeq", "Odoo"].map((n) => <div key={n}><span className="logo">{n[0]}</span><span><b>{n}</b><small>صدّر منه CSV الآن</small></span></div>)}</section>
+      <Integrations />
       {settings && <SourceSettings source={settings} onClose={() => setSettings(null)} />}
       {adding && <ImportModal source={{ name: adding.name, kind: adding.kind }} onClose={() => setAdding(null)} />}
+    </div>
+  );
+}
+
+type IntegrationView = {
+  id: string; name: string; category: string; auth: "key" | "oauth"; keyLabel?: string; keyHelp?: string; maturity: "checked" | "beta"; available: boolean;
+  connection: { status: string; lastSyncAt: string | null; lastError: string | null } | null;
+};
+
+const since = (iso: string | null) => {
+  if (!iso) return "لم تتم بعد";
+  const minutes = Math.round((Date.now() - Date.parse(iso)) / 60000);
+  return minutes < 2 ? "الآن" : minutes < 60 ? `قبل ${counted(minutes, "دقائق", "دقيقة")}` : minutes < 1440 ? `قبل ${counted(Math.round(minutes / 60), "ساعات", "ساعة")}` : formatDay(iso.slice(0, 10));
+};
+
+// Automatic connections: key-based ones connect in place, OAuth ones go through the provider.
+function Integrations() {
+  const [state, setState] = useState<{ encryption: boolean; providers: IntegrationView[] } | null>(null);
+  const [open, setOpen] = useState<IntegrationView | null>(null);
+  const [notice] = useState(() => {
+    const q = typeof location === "undefined" ? null : new URLSearchParams(location.search);
+    if (q?.get("connected")) return { ok: true, text: "تم الربط وسحبنا بياناتك. قد تأخذ المطابقة لحظات." };
+    if (q?.get("error")) return { ok: false, text: q.get("error") === "not-configured" ? "هذا الربط لم يُفعّل بعد على الخادم." : "لم يكتمل الربط. حاول مرة أخرى." };
+    return null;
+  });
+  const load = useCallback(() => callApi("GET", "/api/integrations").then((json) => setState(json as unknown as { encryption: boolean; providers: IntegrationView[] }), () => {}), []);
+  useEffect(() => {
+    load();
+  }, [load]);
+  return (
+    <>
+      <h3 className="soon-title">الربط التلقائي</h3>
+      {notice && <p className={notice.ok ? "import-count" : "form-error"}>{notice.text}</p>}
+      {state && !state.encryption && <div className="smart"><CircleAlert /><span><b>الربط غير مفعّل على الخادم بعد</b><p>يحتاج ضبط مفتاح التشفير NOVA_SECRET_KEY في إعدادات الاستضافة.</p></span></div>}
+      <section className="simple-connect-grid integrations">
+        {(state?.providers || []).map((p) => (
+          <button key={p.id} onClick={() => setOpen(p)} className={p.connection ? (p.connection.status === "error" ? "linked error" : "linked") : ""}>
+            <span className="logo">{p.name[0]}</span>
+            <span><b>{p.name}</b><small>{p.connection ? (p.connection.status === "error" ? "يحتاج انتباه" : `مربوط · ${since(p.connection.lastSyncAt)}`) : p.available ? p.category : `${p.category} · قريبًا`}</small></span>
+            {p.connection ? (p.connection.status === "error" ? <CircleAlert /> : <Check />) : <Plus />}
+          </button>
+        ))}
+      </section>
+      {open && <IntegrationModal provider={open} onClose={() => { setOpen(null); load(); }} />}
+    </>
+  );
+}
+
+function IntegrationModal({ provider: p, onClose }: { provider: IntegrationView; onClose: () => void }) {
+  const { refresh } = useNova();
+  const [key, setKey] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
+  const run = async (action: () => Promise<Record<string, unknown>>, done: (r: Record<string, unknown>) => string) => {
+    setBusy(true);
+    setMessage(null);
+    try {
+      const result = await action();
+      setMessage({ ok: !result.warning && !(Array.isArray(result.errors) && result.errors.length), text: done(result) });
+      await refresh();
+    } catch (e) {
+      setMessage({ ok: false, text: e instanceof Error ? e.message : "تعذر إتمام الطلب." });
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <div className="connect-modal" onClick={onClose}>
+      <section className="import-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose} aria-label="إغلاق"><X /></button>
+        <span className="logo">{p.name[0]}</span>
+        <h2>{p.name}</h2>
+        <p>{p.category}. نسحب البيانات تلقائيًا كل بضع ساعات وعند فتحك للتطبيق، ونطابقها مع باقي مصادرك. قراءة فقط.</p>
+        {p.maturity === "beta" && <small className="import-note">ربط تجريبي: نتحقق منه مع أول حساب حقيقي.</small>}
+        {p.connection ? (
+          <>
+            <div className="settlement-one">
+              <p><span>الحالة</span><b>{p.connection.status === "error" ? "يحتاج انتباه" : "مربوط"}</b></p>
+              <p><span>آخر مزامنة</span><b>{since(p.connection.lastSyncAt)}</b></p>
+              {p.connection.lastError && <p><span>آخر خطأ</span><b className="red">{p.connection.lastError}</b></p>}
+            </div>
+            <div className="modal-actions">
+              <button className="secondary danger" disabled={busy} onClick={() => run(() => callApi("DELETE", `/api/integrations?provider=${p.id}`), () => "تم فصل الربط. البيانات المستوردة باقية في مصادرك.")}><Trash2 /> فصل الربط</button>
+              <button className="primary" disabled={busy} onClick={() => run(() => callApi("POST", "/api/integrations/sync", { provider: p.id }), (r) => (Array.isArray(r.errors) && r.errors.length ? String(r.errors[0]) : `تمت المزامنة: ${counted(Number(r.imported), "عمليات جديدة", "عملية جديدة")}.`))}><RefreshCw /> {busy ? "جارٍ…" : "مزامنة الآن"}</button>
+            </div>
+          </>
+        ) : p.auth === "key" ? (
+          <>
+            <div className="import-form">
+              <label className="wide">{p.keyLabel}<input type="password" autoComplete="off" value={key} onChange={(e) => setKey(e.target.value)} placeholder="الصق المفتاح هنا" /></label>
+              <small className="wide">{p.keyHelp} نحفظه مشفّرًا ولا يظهر لأحد.</small>
+            </div>
+            <div className="modal-actions"><span /><button className="primary" disabled={busy || !key.trim() || !p.available} onClick={() => run(() => callApi("POST", "/api/integrations", { provider: p.id, key: key.trim() }), (r) => (r.warning ? `تم الربط، لكن السحب الأول لم يكتمل: ${r.warning}` : `تم الربط وسحبنا ${counted(Number(r.imported), "عمليات", "عملية")} من آخر 90 يومًا.`))}><Zap /> {busy ? "جارٍ الربط…" : "ربط"}</button></div>
+          </>
+        ) : p.available ? (
+          <a className="primary full" href={`/api/integrations/oauth/start?provider=${p.id}`} target="_top">ربط عبر {p.name} <ArrowLeft /></a>
+        ) : (
+          <p className="import-note">يحتاج هذا الربط تسجيل تطبيق NOVA لدى {p.name} وتفعيله من فريق NOVA. إلى ذلك الحين ارفع ملف تصدير منه.</p>
+        )}
+        {message && <p className={message.ok ? "import-count" : "form-error"}>{message.text}</p>}
+      </section>
     </div>
   );
 }
