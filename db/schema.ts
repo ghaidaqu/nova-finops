@@ -46,6 +46,10 @@ export const connections = sqliteTable("connections", {
   lagDays: integer("lag_days").notNull().default(3),
   // For sales sources: "payments" (through a gateway), "bank" (paid directly) or "auto".
   settlesVia: text("settles_via").notNull().default("auto"),
+  // Which outside system the data came from (moyasar, salla...) and how: "file" or "api".
+  // One system can feed a workspace through only one path, so its numbers are never counted twice.
+  system: text("system"),
+  origin: text("origin").notNull().default("file"),
   lastSyncAt: text("last_sync_at").notNull().default(sql`CURRENT_TIMESTAMP`),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 }, (table) => [uniqueIndex("connections_workspace_source_unique").on(table.workspaceId, table.source)]);

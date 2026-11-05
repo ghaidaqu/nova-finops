@@ -84,3 +84,13 @@ test("demo profit margin is computed from sales, fees and expenses", async () =>
   const margin = ((t.sales - t.fees - t.expenses) / t.sales) * 100;
   assert.ok(margin > 20 && margin < 40, `margin ${margin.toFixed(1)}%`);
 });
+
+test("files are matched to the system they came from", async () => {
+  const { guessSystem } = await import("../lib/parse-file.ts");
+  assert.equal(guessSystem("payments.csv", ["ID", "Status", "Amount", "Fee", "metadata[order_id]"]), "moyasar");
+  assert.equal(guessSystem("orders.csv", ["Reference", "Business Date", "Total Price"]), "foodics");
+  assert.equal(guessSystem("تقرير سلة.xlsx", ["رقم الطلب"]), "salla");
+  assert.equal(guessSystem("Charges.csv", ["Charge ID", "Amount"]), "tap");
+  assert.equal(guessSystem("bank.csv", ["التاريخ", "مدين", "دائن"]), "");
+  assert.equal(guessSystem("startup-data.csv", ["date", "amount"]), "");
+});

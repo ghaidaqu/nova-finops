@@ -105,7 +105,9 @@ function workingGap(from: number, to: number) {
 const inWindow = (e: Item, rDay: number) => rDay - e.day >= -1 && workingGap(e.day, rDay) <= e.lag;
 
 // Arabic counted nouns: 3-10 take the plural, everything else the singular ("5 أيام", "21 يومًا").
-export const counted = (n: number, few: string, other: string) => `${n.toLocaleString("en-US")} ${n >= 3 && n <= 10 ? few : other}`;
+// 1 and 2 take the bare singular ("1 صف", "2 يوم"), so drop the accusative ending ("صفًا").
+export const counted = (n: number, few: string, other: string) =>
+  `${n.toLocaleString("en-US")} ${n >= 3 && n <= 10 ? few : n === 1 || n === 2 ? other.replace(/ًا(?=\s|$)/g, "") : other}`;
 const daysText = (n: number) => (n === 1 ? "يوم واحد" : n === 2 ? "يومان" : counted(n, "أيام", "يومًا"));
 const workDaysText = (n: number) => (n === 1 ? "يوم عمل" : n === 2 ? "يومي عمل" : counted(n, "أيام عمل", "يوم عمل"));
 const opsText = (n: number) => (n === 1 ? "عملية" : n === 2 ? "عمليتين" : counted(n, "عمليات", "عملية"));

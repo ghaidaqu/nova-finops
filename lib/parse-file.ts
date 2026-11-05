@@ -432,3 +432,18 @@ export function toRows(table: Table, mapping: Mapping) {
   }
   return { rows, invalid, skipped };
 }
+
+// Which known system a file was exported from, by its name and tell-tale columns.
+const systemSigns: [string, RegExp, RegExp?][] = [
+  ["moyasar", /moyasar|ميسر/i, /metadata\[|source type/i],
+  ["tap", /(^|[^a-z])tap([^a-z]|$)|تاب/i, /charge id/i],
+  ["wafeq", /wafeq|وافق/i],
+  ["qoyod", /qoyod|قيود/i],
+  ["salla", /salla|سلة|سله/i],
+  ["zid", /(^|[^a-z])zid([^a-z]|$)|زد/i],
+  ["foodics", /foodics|فودكس/i, /business date/i],
+];
+export function guessSystem(fileName: string, headers: string[]) {
+  const joined = headers.join(" | ");
+  return systemSigns.find(([, name, cols]) => name.test(fileName) || (cols ? cols.test(joined) : false))?.[0] ?? "";
+}

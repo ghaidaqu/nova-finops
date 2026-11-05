@@ -19,7 +19,8 @@ const validDate = (value: unknown) => {
 };
 const text = (value: unknown, max: number) => (typeof value === "string" && value.trim() ? value.trim().slice(0, max) : null);
 
-export async function importRows(workspaceId: string, source: string, kind: SourceKind, rows: ImportRow[], config?: { feeBps?: number; feeFixedHalalas?: number; lagDays?: number }) {
+// `system`/`origin` record which outside system fed the source and whether by file or API.
+export async function importRows(workspaceId: string, source: string, kind: SourceKind, rows: ImportRow[], config?: { feeBps?: number; feeFixedHalalas?: number; lagDays?: number; system?: string | null; origin?: "file" | "api" }) {
   const db = getDb();
   const occurrences = new Map<string, number>();
   const records = [];
@@ -53,7 +54,7 @@ export async function importRows(workspaceId: string, source: string, kind: Sour
 
   await db
     .insert(connections)
-    .values({ id: crypto.randomUUID(), workspaceId, source, kind, status: "connected", lastSyncAt: new Date().toISOString(), lagDays: config?.lagDays ?? defaultLag[kind], feeBps: config?.feeBps ?? 0, feeFixedHalalas: config?.feeFixedHalalas ?? 0 })
+    .values({ id: crypto.randomUUID(), workspaceId, source, kind, status: "connected", lastSyncAt: new Date().toISOString(), lagDays: config?.lagDays ?? defaultLag[kind], feeBps: config?.feeBps ?? 0, feeFixedHalalas: config?.feeFixedHalalas ?? 0, system: config?.system ?? null, origin: config?.origin ?? "file" })
     .onConflictDoUpdate({ target: [connections.workspaceId, connections.source], set: { status: "connected", lastSyncAt: new Date().toISOString() } });
 
   // One JSON parameter per chunk keeps us far below D1's 100 bound parameters per query.

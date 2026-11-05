@@ -2,6 +2,7 @@ import { currentUser } from "@/lib/auth";
 import { providers, type ProviderId } from "@/lib/integrations/providers";
 import { oauthClient, originOf } from "@/lib/integrations/sync";
 import { sign } from "@/lib/secrets";
+import { pathConflict } from "@/lib/source-paths";
 
 const back = (origin: string, query: string) => Response.redirect(`${origin}/app/connections?${query}`, 302);
 
@@ -15,6 +16,7 @@ export async function GET(request: Request) {
     const provider = providers[new URL(request.url).searchParams.get("provider") as ProviderId];
     const client = provider?.oauth ? oauthClient(provider.id, origin) : null;
     if (!provider?.oauth || !client) return back(origin, "error=not-configured");
+    if (await pathConflict(user.workspace.id, provider.id, "api")) return back(origin, `error=files&provider=${provider.id}`);
     const state = await sign({ w: user.workspace.id, p: provider.id });
     return Response.redirect(provider.oauth.authorizeUrl(client, state), 302);
   } catch { return back(origin, "error=oauth"); }

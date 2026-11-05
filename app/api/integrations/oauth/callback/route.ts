@@ -5,6 +5,7 @@ import { currentUser } from "@/lib/auth";
 import { providers, type ProviderId } from "@/lib/integrations/providers";
 import { oauthClient, originOf, syncIntegration } from "@/lib/integrations/sync";
 import { encryptJson, verify } from "@/lib/secrets";
+import { pathConflict } from "@/lib/source-paths";
 
 const back = (origin: string, query: string) => Response.redirect(`${origin}/app/connections?${query}`, 302);
 
@@ -20,6 +21,7 @@ export async function GET(request: Request) {
     const client = provider?.oauth ? oauthClient(provider.id, origin) : null;
     const code = params.get("code");
     if (!provider?.oauth || !client || !code) return back(origin, "error=oauth");
+    if (await pathConflict(user.workspace.id, provider.id, "api")) return back(origin, `error=files&provider=${provider.id}`);
     const creds = await provider.oauth.exchange(code, client);
     const db = getDb();
     const credentials = await encryptJson(creds);

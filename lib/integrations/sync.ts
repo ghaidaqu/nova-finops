@@ -44,7 +44,7 @@ export async function syncIntegration(row: Integration, origin: string) {
     let imported = 0;
     for (const batch of batches) {
       if (!batch.rows.length) continue;
-      const result = await importRows(row.workspaceId, sourceName(provider.id, batch.label), batch.kind, batch.rows);
+      const result = await importRows(row.workspaceId, sourceName(provider.id, batch.label), batch.kind, batch.rows, { system: provider.id, origin: "api" });
       imported += result.imported;
     }
     await db.update(integrations).set({ status: "connected", lastError: null, lastSyncAt: new Date(now).toISOString(), syncedThrough: until }).where(eq(integrations.id, row.id));

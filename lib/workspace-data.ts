@@ -6,7 +6,7 @@ import { reconcile, type Issue, type SettlesVia, type SourceKind, type Txn } fro
 
 export type IssueStatus = "open" | "resolved" | "snoozed";
 
-export type SourceSummary = { name: string; kind: SourceKind; feeBps: number; feeFixed: number; lagDays: number; settlesVia: SettlesVia; count: number; total: number; from: string | null; to: string | null; lastSyncAt: string };
+export type SourceSummary = { name: string; kind: SourceKind; feeBps: number; feeFixed: number; lagDays: number; settlesVia: SettlesVia; system: string | null; origin: "file" | "api"; count: number; total: number; from: string | null; to: string | null; lastSyncAt: string };
 
 export type TxnView = { id: string; source: string; date: string; amount: number; fee: number | null; reference: string | null; description: string };
 
@@ -87,7 +87,7 @@ export async function workspaceData(user: CurrentUser): Promise<WorkspaceData> {
   const statsOf = new Map(stats.map((x) => [x.source, x]));
   const sources: SourceSummary[] = linked.map((c) => {
     const own = statsOf.get(c.source);
-    return { name: c.source, kind: c.kind as SourceKind, feeBps: c.feeBps, feeFixed: c.feeFixedHalalas, lagDays: c.lagDays, settlesVia: c.settlesVia as SettlesVia, count: own?.count || 0, total: Number(own?.total || 0), from: own?.from || null, to: own?.to || null, lastSyncAt: c.lastSyncAt };
+    return { name: c.source, kind: c.kind as SourceKind, feeBps: c.feeBps, feeFixed: c.feeFixedHalalas, lagDays: c.lagDays, settlesVia: c.settlesVia as SettlesVia, system: c.system, origin: c.origin === "api" ? "api" : "file", count: own?.count || 0, total: Number(own?.total || 0), from: own?.from || null, to: own?.to || null, lastSyncAt: c.lastSyncAt };
   });
 
   return {

@@ -264,3 +264,9 @@ a.primary.full{display:flex;justify-content:center;text-decoration:none;margin-t
 .reset-list b,.reset-list small{display:block}
 .reset-list small{color:var(--muted);font-size:12px}
 .reset-list input{width:55%;padding:8px;border:1px solid var(--line);border-radius:8px;font-size:11px;direction:ltr}
+/* One path per system */
+.source-list b .tag{display:inline-block;margin-inline-start:8px;padding:1px 8px;border-radius:999px;background:#e8f6ef;color:var(--green);font-size:11px;font-weight:700;vertical-align:middle}
+.path-lock{display:flex;gap:10px;align-items:flex-start;background:#fff7ef;border:1px solid #f1d9bd;border-radius:12px;padding:14px;margin-top:12px}
+.path-lock>svg{color:#c97a26;flex:0 0 auto;margin-top:2px}
+.path-lock b,.path-lock small{display:block}
+.path-lock small{color:#7a5a36;line-height:1.8;margin-top:4px}

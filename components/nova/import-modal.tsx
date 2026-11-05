@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import { ArrowLeft, Check, FileSpreadsheet, X } from "lucide-react";
-import { bestSheet, guessKind, guessMapping, readFile, toRows, toTable, type Field, type Mapping, type Sheet } from "@/lib/parse-file";
+import { bestSheet, guessKind, guessMapping, guessSystem, readFile, toRows, toTable, type Field, type Mapping, type Sheet } from "@/lib/parse-file";
 import type { SourceKind } from "@/lib/reconcile";
 import { callApi, counted, formatDay, formatSar, kindHelp, kindLabels, useNova } from "./data";
 
@@ -24,8 +24,12 @@ const fieldLabels: [Field, string, boolean][] = [
 // Large files go up in parts so each request stays well inside the server's limits.
 const CHUNK = 5000;
 
-export function ImportModal({ onClose, source: presetSource }: { onClose: () => void; source?: { name: string; kind: SourceKind } }) {
-  const { refresh } = useNova();
+// Systems that can also be connected by API; a file from one of them is tagged so the two paths never mix.
+const systems: [string, string][] = [["moyasar", "ميسر"], ["tap", "تاب"], ["wafeq", "وافق"], ["qoyod", "قيود"], ["salla", "سلة"], ["zid", "زد"], ["foodics", "فودكس"]];
+
+export function ImportModal({ onClose, source: presetSource }: { onClose: () => void; source?: { name: string; kind: SourceKind; system?: string | null } }) {
+  const { data, refresh } = useNova();
+  const [system, setSystem] = useState(presetSource?.system || "");
   const [file, setFile] = useState<{ name: string; sheets: Sheet[] } | null>(null);
   const [sheetIndex, setSheetIndex] = useState(0);
   const [headerIndex, setHeaderIndex] = useState(0);
@@ -41,6 +45,7 @@ export function ImportModal({ onClose, source: presetSource }: { onClose: () => 
   const table = useMemo(() => (file ? toTable(cells, headerIndex) : null), [file, cells, headerIndex]);
   const parsed = useMemo(() => (table ? toRows(table, mapping) : null), [table, mapping]);
   const hasAmount = mapping.amount !== undefined || mapping.credit !== undefined || mapping.debit !== undefined;
+  const apiLinked = Boolean(system && data?.sources.some((s) => s.system === system && s.origin === "api"));
 
   // Re-detect everything for a sheet or header row the user picked (or the best guess).
   const choose = (sheets: Sheet[], fileName: string, sheet: number, header?: number) => {
@@ -49,7 +54,10 @@ export function ImportModal({ onClose, source: presetSource }: { onClose: () => 
     setSheetIndex(sheet);
     setHeaderIndex(t.headerIndex);
     setMapping(guessMapping(t.headers, k, t.rows));
-    if (!presetSource) setKind(k);
+    if (!presetSource) {
+      setKind(k);
+      setSystem(guessSystem(fileName, t.headers));
+    }
   };
 
   const pick = async (picked: File) => {
@@ -76,7 +84,7 @@ export function ImportModal({ onClose, source: presetSource }: { onClose: () => 
     try {
       for (let i = 0; i < parsed.rows.length; i += CHUNK) {
         if (parsed.rows.length > CHUNK) setProgress(`${Math.min(i + CHUNK, parsed.rows.length).toLocaleString("en-US")} / ${parsed.rows.length.toLocaleString("en-US")}`);
-        const result = await callApi("POST", "/api/import", { source: name.trim() || "ملف مستورد", kind, rows: parsed.rows.slice(i, i + CHUNK) });
+        const result = await callApi("POST", "/api/import", { source: name.trim() || "ملف مستورد", kind, system: system || undefined, rows: parsed.rows.slice(i, i + CHUNK) });
         total.imported += Number(result.imported);
         total.skipped += Number(result.skipped);
         total.invalid += Number(result.invalid);
@@ -139,6 +147,13 @@ export function ImportModal({ onClose, source: presetSource }: { onClose: () => 
                 </select>
               </label>
               <small className="wide">{kindHelp[kind]}</small>
+              <label className="wide">من أي نظام هذا الملف؟
+                <select value={system} onChange={(e) => setSystem(e.target.value)} disabled={Boolean(presetSource)}>
+                  <option value="">نظام آخر (بنك، نقاط بيع، Excel…)</option>
+                  {systems.map(([id, label]) => <option key={id} value={id}>{label}</option>)}
+                </select>
+              </label>
+              {apiLinked && <p className="form-error wide">{systems.find(([id]) => id === system)?.[1]} مربوط تلقائيًا، فلا يمكن رفع ملفات منه حتى لا تتضاعف الأرقام. افصل الربط من صفحة المصادر إذا أردت الملفات بدلًا منه.</p>}
               {fieldLabels.map(([field, label, required]) => (
                 <label key={field}>{label}{required && " *"}
                   <select value={mapping[field] ?? ""} onChange={(e) => setMapping({ ...mapping, [field]: e.target.value === "" ? undefined : Number(e.target.value) })}>
@@ -167,7 +182,7 @@ export function ImportModal({ onClose, source: presetSource }: { onClose: () => 
             {error && <p className="form-error">{error}</p>}
             <div className="modal-actions">
               <button className="secondary" onClick={() => setFile(null)}>ملف آخر</button>
-              <button className="primary" disabled={busy || !parsed?.rows.length || mapping.date === undefined} onClick={save}>{busy ? `جارٍ الحفظ… ${progress}` : `استيراد ${counted(parsed?.rows.length || 0, "عمليات", "عملية")}`} <ArrowLeft /></button>
+              <button className="primary" disabled={busy || apiLinked || !parsed?.rows.length || mapping.date === undefined} onClick={save}>{busy ? `جارٍ الحفظ… ${progress}` : `استيراد ${counted(parsed?.rows.length || 0, "عمليات", "عملية")}`} <ArrowLeft /></button>
             </div>
           </>
         )}

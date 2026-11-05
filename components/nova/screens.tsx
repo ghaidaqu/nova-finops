@@ -325,15 +325,15 @@ export function Sources({ openImport }: { openImport: () => void }) {
         <section className="source-list">{data.sources.map((s) => (
           <article key={s.name}>
             <span className="logo">{kindIcon(s.kind)}</span>
-            <div><b>{s.name}</b><small>{kindLabels[s.kind]} · {counted(s.count, "عمليات", "عملية")} · {formatDay(s.from)} – {formatDay(s.to)}</small>{(s.kind === "sales" || s.kind === "payments") && s.feeBps + s.feeFixed > 0 && <em>رسوم متفق عليها {s.feeBps / 100}%{s.feeFixed ? ` + ${formatSar(s.feeFixed)}` : ""}</em>}</div>
-            <button className="secondary" onClick={() => setAdding(s)}><Plus /> ملف</button>
+            <div><b>{s.name}{s.origin === "api" && <span className="tag">ربط تلقائي</span>}</b><small>{kindLabels[s.kind]} · {counted(s.count, "عمليات", "عملية")} · {formatDay(s.from)} – {formatDay(s.to)}</small>{(s.kind === "sales" || s.kind === "payments") && s.feeBps + s.feeFixed > 0 && <em>رسوم متفق عليها {s.feeBps / 100}%{s.feeFixed ? ` + ${formatSar(s.feeFixed)}` : ""}</em>}</div>
+            {s.origin === "file" && <button className="secondary" onClick={() => setAdding(s)}><Plus /> ملف</button>}
             <button className="icon" onClick={() => setSettings(s)} aria-label="إعدادات"><Settings /></button>
           </article>
         ))}</section>
       ) : <StartHere openImport={openImport} />}
       <Integrations />
       {settings && <SourceSettings source={settings} onClose={() => setSettings(null)} />}
-      {adding && <ImportModal source={{ name: adding.name, kind: adding.kind }} onClose={() => setAdding(null)} />}
+      {adding && <ImportModal source={{ name: adding.name, kind: adding.kind, system: adding.system }} onClose={() => setAdding(null)} />}
     </div>
   );
 }
@@ -341,6 +341,7 @@ export function Sources({ openImport }: { openImport: () => void }) {
 type IntegrationView = {
   id: string; name: string; category: string; auth: "key" | "oauth"; keyLabel?: string; keyHelp?: string; maturity: "checked" | "beta"; available: boolean;
   connection: { status: string; lastSyncAt: string | null; lastError: string | null } | null;
+  fileSources: string[];
 };
 
 const since = (iso: string | null) => {
@@ -356,7 +357,8 @@ function Integrations() {
   const [notice] = useState(() => {
     const q = typeof location === "undefined" ? null : new URLSearchParams(location.search);
     if (q?.get("connected")) return { ok: true, text: "تم الربط وسحبنا بياناتك. قد تأخذ المطابقة لحظات." };
-    if (q?.get("error")) return { ok: false, text: q.get("error") === "not-configured" ? "هذا الربط لم يُفعّل بعد على الخادم." : "لم يكتمل الربط. حاول مرة أخرى." };
+    const error = q?.get("error");
+    if (error) return { ok: false, text: error === "not-configured" ? "هذا الربط لم يُفعّل بعد على الخادم." : error === "files" ? "عندك ملفات من هذا النظام. احذفها أولًا ثم اربط، حتى لا تتضاعف الأرقام." : "لم يكتمل الربط. حاول مرة أخرى." };
     return null;
   });
   const load = useCallback(() => callApi("GET", "/api/integrations").then((json) => setState(json as unknown as { encryption: boolean; providers: IntegrationView[] }), () => {}), []);
@@ -372,7 +374,7 @@ function Integrations() {
         {(state?.providers || []).map((p) => (
           <button key={p.id} onClick={() => setOpen(p)} className={p.connection ? (p.connection.status === "error" ? "linked error" : "linked") : ""}>
             <span className="logo">{p.name[0]}</span>
-            <span><b>{p.name}</b><small>{p.connection ? (p.connection.status === "error" ? "يحتاج انتباه" : `مربوط · ${since(p.connection.lastSyncAt)}`) : p.available ? p.category : `${p.category} · قريبًا`}</small></span>
+            <span><b>{p.name}</b><small>{p.connection ? (p.connection.status === "error" ? "يحتاج انتباه" : `مربوط · ${since(p.connection.lastSyncAt)}`) : p.fileSources.length ? "تستخدم الملفات" : p.available ? p.category : `${p.category} · قريبًا`}</small></span>
             {p.connection ? (p.connection.status === "error" ? <CircleAlert /> : <Check />) : <Plus />}
           </button>
         ))}
@@ -408,7 +410,12 @@ function IntegrationModal({ provider: p, onClose }: { provider: IntegrationView;
         <h2>{p.name}</h2>
         <p>{p.category}. نسحب البيانات تلقائيًا كل بضع ساعات وعند فتحك للتطبيق، ونطابقها مع باقي مصادرك. قراءة فقط.</p>
         {p.maturity === "beta" && <small className="import-note">ربط تجريبي: نتحقق منه مع أول حساب حقيقي.</small>}
-        {p.connection ? (
+        {!p.connection && p.fileSources.length > 0 ? (
+          <div className="path-lock">
+            <CircleAlert />
+            <span><b>تستخدم ملفات من {p.name}</b><small>في: {p.fileSources.map((f) => `«${f}»`).join("، ")}. لا يمكن استخدام الملفات والربط التلقائي معًا لنفس النظام حتى لا تتضاعف الأرقام. احذف هذه المصادر من القائمة أعلاه ثم اربط.</small></span>
+          </div>
+        ) : p.connection ? (
           <>
             <div className="settlement-one">
               <p><span>الحالة</span><b>{p.connection.status === "error" ? "يحتاج انتباه" : "مربوط"}</b></p>
@@ -416,7 +423,7 @@ function IntegrationModal({ provider: p, onClose }: { provider: IntegrationView;
               {p.connection.lastError && <p><span>آخر خطأ</span><b className="red">{p.connection.lastError}</b></p>}
             </div>
             <div className="modal-actions">
-              <button className="secondary danger" disabled={busy} onClick={() => run(() => callApi("DELETE", `/api/integrations?provider=${p.id}`), () => "تم فصل الربط. البيانات المستوردة باقية في مصادرك.")}><Trash2 /> فصل الربط</button>
+              <button className="secondary danger" disabled={busy} onClick={() => { if (confirm(`فصل ${p.name} يحذف البيانات اللي سحبناها منه، عشان تقدر ترفع ملفاته بدلها بدون تكرار. متابعة؟`)) run(() => callApi("DELETE", `/api/integrations?provider=${p.id}`), () => "تم فصل الربط وحذف بياناته. تقدر الحين ترفع ملفاته بدلًا منه."); }}><Trash2 /> فصل الربط</button>
               <button className="primary" disabled={busy} onClick={() => run(() => callApi("POST", "/api/integrations/sync", { provider: p.id }), (r) => (Array.isArray(r.errors) && r.errors.length ? String(r.errors[0]) : `تمت المزامنة: ${counted(Number(r.imported), "عمليات جديدة", "عملية جديدة")}.`))}><RefreshCw /> {busy ? "جارٍ…" : "مزامنة الآن"}</button>
             </div>
           </>
