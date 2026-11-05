@@ -139,6 +139,23 @@ button.icon{border:1px solid var(--line);background:white;border-radius:9px;widt
   .app>header span button{padding:0 9px}
 }
 
+/* Compact header-style hero: visual summary first, decision copy second. */
+.simple-hero{padding-top:12px;padding-bottom:48px}
+.hero-stage{max-width:920px;min-height:310px;margin:0 auto -4px}
+.hero-stage:before{width:540px;height:275px;bottom:4%}
+.hero-stage:after{width:680px;height:165px;bottom:6%}
+.hero-stage .hero-visual img{width:min(49vw,540px);max-width:540px}
+.hero-stat{width:158px;padding:11px 12px;border-radius:15px;gap:8px}
+.hero-stat svg{width:18px;height:18px;margin-top:2px}.hero-stat small{font-size:10px}.hero-stat b{font-size:19px}.hero-stat em{font-size:10px}
+.hero-stat.revenue{left:2%;top:16%}.hero-stat.profit{right:2%;top:16%}.hero-stat.automation{left:-2%;top:59%}.hero-stat.margin{right:-2%;top:59%}
+.hero-copy h1{font-size:clamp(38px,3.5vw,50px);margin:10px 0 7px}.hero-copy>p{font-size:15px!important;line-height:1.75!important;max-width:510px}.hero-copy .hero-actions{margin-top:16px}.hero-copy .hero-actions button{min-height:47px;min-width:150px}.hero-copy .trust{margin-top:9px}
+@media(max-width:760px){
+  .simple-hero{padding-top:4px;padding-bottom:40px}.hero-stage{margin:0 auto 10px;min-height:0}.hero-stage:before{width:330px;height:210px;bottom:26%}.hero-stage .hero-visual img{width:min(100%,320px);max-width:320px}.hero-stat{padding:10px;border-radius:13px}.hero-copy h1{font-size:37px;margin:10px 0 8px}.hero-copy>p{font-size:13px!important}.hero-copy .hero-actions{margin-top:16px}
+}
+.hero-notice{position:absolute;z-index:3;top:4%;left:50%;display:flex;align-items:center;gap:8px;min-width:190px;padding:9px 11px;transform:translateX(-50%);background:#fff;border:1px solid #f0ede8;border-radius:14px;box-shadow:0 8px 22px rgba(16,65,68,.06);text-align:right;color:#183a3e;animation:hero-card-in .55s .38s cubic-bezier(.2,.8,.2,1) forwards;opacity:0}.hero-notice>svg:first-child{width:18px;height:18px;color:#d49724}.hero-notice>svg:last-child{width:15px;height:15px;color:#79908c}.hero-notice span{flex:1}.hero-notice small,.hero-notice b{display:block}.hero-notice small{font-size:10px;color:#a06c12}.hero-notice b{font-size:11px;white-space:nowrap}
+@media(prefers-reduced-motion:reduce){.hero-notice{opacity:1;animation:none}}
+@media(max-width:760px){.hero-notice{position:relative;top:auto;left:auto;grid-column:1/-1;transform:none;min-width:0;justify-content:center;padding:10px;opacity:1;animation:none}.hero-notice b{font-size:12px}}
+
 /* Homepage hero — centered, quiet, and built around NOVA's original Saudi illustration. */
 .simple-site{background:#fcfaf7}
 .simple-hero{display:block;position:relative;overflow:hidden;padding:34px 24px 18px;text-align:center}
