@@ -22,6 +22,22 @@ export async function passwordHash(password: string, salt: string, iterations = 
   return hex(bits);
 }
 
+// Checks a password against a stored user. Tries the current iteration count first, then the
+// row's own count (older rows, and rows written while signup didn't record the count). A count
+// the runtime rejects (Workers caps PBKDF2 at 100,000) counts as a mismatch, not an error.
+export async function verifyPassword(password: string, user: { passwordSalt: string; passwordHash: string; passwordIterations: number }) {
+  const matches = async (iterations: number) => {
+    try {
+      return (await passwordHash(password, user.passwordSalt, iterations)) === user.passwordHash;
+    } catch {
+      return false;
+    }
+  };
+  if (await matches(PASSWORD_ITERATIONS)) return { ok: true, current: user.passwordIterations === PASSWORD_ITERATIONS };
+  if (user.passwordIterations !== PASSWORD_ITERATIONS && (await matches(user.passwordIterations))) return { ok: true, current: false };
+  return { ok: false, current: false };
+}
+
 // Parses a JSON object body. Requiring application/json also blocks cross-site
 // form posts (login CSRF), since browsers can't send that type cross-origin without CORS.
 export async function readJson(request: Request, maxBytes = 15_000_000): Promise<Record<string, unknown> | Response> {

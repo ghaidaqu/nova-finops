@@ -1,7 +1,7 @@
 import { and, eq, ne } from "drizzle-orm";
 import { getDb } from "@/db";
 import { sessions, users } from "@/db/schema";
-import { PASSWORD_ITERATIONS, currentUser, digest, passwordHash, readJson } from "@/lib/auth";
+import { PASSWORD_ITERATIONS, currentUser, digest, passwordHash, readJson, verifyPassword } from "@/lib/auth";
 
 // Change the signed-in user's password and sign out their other sessions.
 export async function POST(request: Request) {
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     if (next.length < 8 || next.length > 200 || !next.trim()) return Response.json({ error: "كلمة المرور الجديدة 8 أحرف على الأقل." }, { status: 400 });
     const db = getDb();
     const [row] = await db.select().from(users).where(eq(users.id, user.id)).limit(1);
-    if (await passwordHash(typeof body.current === "string" ? body.current : "", row.passwordSalt, row.passwordIterations) !== row.passwordHash) return Response.json({ error: "كلمة المرور الحالية غير صحيحة." }, { status: 400 });
+    if (!(await verifyPassword(typeof body.current === "string" ? body.current : "", row)).ok) return Response.json({ error: "كلمة المرور الحالية غير صحيحة." }, { status: 400 });
     const salt = crypto.randomUUID();
     const token = request.headers.get("cookie")?.match(/(?:^|;\s*)nova_session=([^;]+)/)?.[1] || "";
     await db.batch([

@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { users, workspaces } from "@/db/schema";
-import { createSession, passwordHash, readJson, sessionCookie, str } from "@/lib/auth";
+import { PASSWORD_ITERATIONS, createSession, passwordHash, readJson, sessionCookie, str } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     const workspace = { id: crypto.randomUUID(), ownerId: id, name: workspaceName };
     // One batch, so a failure can't leave a user without a workspace.
     await db.batch([
-      db.insert(users).values({ id, name, email, passwordSalt: salt, passwordHash: await passwordHash(password, salt) }),
+      db.insert(users).values({ id, name, email, passwordSalt: salt, passwordIterations: PASSWORD_ITERATIONS, passwordHash: await passwordHash(password, salt) }),
       db.insert(workspaces).values(workspace),
     ]);
     const token = await createSession(id);

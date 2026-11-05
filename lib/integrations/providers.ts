@@ -32,8 +32,10 @@ export type Provider = {
 const MAX_PAGES = 30;
 
 export class ProviderError extends Error {
-  constructor(message: string, readonly status?: number) {
+  status?: number;
+  constructor(message: string, status?: number) {
     super(message);
+    this.status = status;
   }
 }
 

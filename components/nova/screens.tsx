@@ -470,6 +470,7 @@ export function SettingsPage({ onLogout }: { onLogout: () => void }) {
           <p className="account"><b>{data.user.name}</b><small>{data.user.email}</small></p>
           <button className="secondary" onClick={onLogout}><LogOut /> تسجيل الخروج</button>
           <ChangePassword />
+          {data.user.admin && <ResetRequests />}
           <h3 className="space">البيانات</h3>
           <p className="muted">{counted(data.totals.records, "عمليات", "عملية")} من {counted(data.sources.length, "مصادر", "مصدر")}.</p>
           <div className="stack">
@@ -479,6 +480,35 @@ export function SettingsPage({ onLogout }: { onLogout: () => void }) {
         </section>
       </div>
     </div>
+  );
+}
+
+// Owner only: answer "forgot password" requests with a one-time link to send the tester.
+function ResetRequests() {
+  const [requests, setRequests] = useState<{ id: string; email: string; requestedAt: string; hasAccount: boolean }[] | null>(null);
+  const [links, setLinks] = useState<Record<string, string>>({});
+  const load = useCallback(() => callApi("GET", "/api/admin/resets").then((r) => setRequests(r.requests as typeof requests), () => setRequests([])), []);
+  useEffect(() => {
+    load();
+  }, [load]);
+  const issue = async (id: string) => {
+    const r = await callApi("POST", "/api/admin/resets", { id });
+    setLinks({ ...links, [id]: String(r.link) });
+    navigator.clipboard?.writeText(String(r.link)).catch(() => {});
+  };
+  return (
+    <>
+      <h3 className="space">طلبات استعادة كلمة المرور</h3>
+      {!requests ? <p className="muted">جارٍ التحميل…</p> : !requests.length ? <p className="muted">لا توجد طلبات.</p> : (
+        <div className="reset-list">{requests.map((r) => (
+          <div key={r.id}>
+            <span><b>{r.email}</b><small>{since(r.requestedAt)}{r.hasAccount ? "" : " · لا يوجد حساب بهذا البريد"}</small></span>
+            {links[r.id] ? <input readOnly value={links[r.id]} onFocus={(e) => e.target.select()} /> : <button className="secondary" disabled={!r.hasAccount} onClick={() => issue(r.id)}>إنشاء رابط</button>}
+          </div>
+        ))}</div>
+      )}
+      {Object.keys(links).length > 0 && <p className="import-count">نسخنا الرابط. أرسله للمختبر، وصلاحيته 24 ساعة ولمرة واحدة.</p>}
+    </>
   );
 }
 

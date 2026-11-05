@@ -258,3 +258,9 @@ body{font-family:"Cairo",sans-serif;font-size:var(--body);line-height:1.65}
 .simple-connect-grid.integrations small{color:var(--muted)}
 .simple-connect-grid.integrations .linked small{color:var(--green)}
 a.primary.full{display:flex;justify-content:center;text-decoration:none;margin-top:14px}
+/* Owner: password reset requests */
+.reset-list{display:grid;gap:8px;margin:8px 0}
+.reset-list>div{display:flex;align-items:center;gap:10px;justify-content:space-between;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.reset-list b,.reset-list small{display:block}
+.reset-list small{color:var(--muted);font-size:12px}
+.reset-list input{width:55%;padding:8px;border:1px solid var(--line);border-radius:8px;font-size:11px;direction:ltr}
