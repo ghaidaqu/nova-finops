@@ -1,7 +1,7 @@
 "use client";
 import {useCallback,useEffect,useState} from "react";
 import {brand} from "@/src/config/brand";
-import {ArrowLeft,BarChart3,Bell,ChevronLeft,CircleAlert,Check,FileSpreadsheet,GitCompareArrows,LayoutDashboard,LineChart,Link2,LogOut,Menu,ReceiptText,Settings,ShieldCheck,Sparkles,Target,Wallet,X,Zap} from "lucide-react";
+import {ArrowLeft,Bell,ChevronLeft,CircleAlert,Check,FileSpreadsheet,GitCompareArrows,Landmark,LayoutDashboard,LineChart,Link2,LogOut,Menu,ReceiptText,Settings,ShieldCheck,Sparkles,Wallet,X} from "lucide-react";
 import {NovaProvider,callApi,sectors,useNova} from "@/components/nova/data";
 import {ImportModal} from "@/components/nova/import-modal";
 import {Alerts,Analytics,ComingSoon,Loading,MoneyFlow,Overview,Reconciliation,SettingsPage,Sources} from "@/components/nova/screens";
@@ -18,7 +18,23 @@ export default function Prototype(){const[r,go]=useRoute();return r==="home"?<Ma
 function Brand(){return <span className="brand"><b>{brand.name}</b></span>}
 function MarketingSimple({go}:{go:(r:R)=>void}){return <main className="simple-site">
   <nav className="simple-nav wrap"><button onClick={()=>go("home")}><Brand/></button><div><button onClick={()=>go("login")}>دخول</button></div></nav>
-  <section className="simple-hero wrap"><div className="hero-stage"><figure className="hero-visual"><img src="/nova-hero-transparent.png" alt="فريق سعودي يدير عملياته المالية من لوحة واحدة"/></figure><div className="hero-stat revenue"><BarChart3/><span><small>الإيرادات</small><b>245,800</b><em>↑ 12.8%</em></span></div><div className="hero-stat profit"><Wallet/><span><small>صافي الربح</small><b>78,420</b><em>↑ 8.4%</em></span></div><div className="hero-stat margin"><Target/><span><small>هامش الربح</small><b>31.9%</b><em>↑ 2.1%</em></span></div><div className="hero-stat automation"><Zap/><span><small>أتمتة العمليات</small><b>96%</b><i><u/></i></span></div><button className="hero-notice" onClick={()=>go("alerts")}><CircleAlert/><span><small>يحتاج انتباهك</small><b>مطالبة مستحقة</b></span><ChevronLeft/></button></div><div className="hero-copy"><span className="eyebrow"><Sparkles/> منصة التشغيل المالي والبياني</span><h1>من البيانات إلى<br/><em>القرار.</em></h1><p>منصة موحّدة لتحليل الأداء المالي والتشغيلي، وأتمتة المطابقة لاتخاذ قرارات أدق وأسرع.</p><div className="hero-actions"><button className="primary" onClick={()=>go("overview")}>شاهد المنصة <ArrowLeft/></button><button className="secondary" onClick={()=>go("signup")}>ابدأ مجانًا</button></div><small className="trust"><ShieldCheck/> قراءة وتحليل فقط</small></div></section>
+  <section className="simple-hero wrap">
+    <div className="hero-copy"><span className="eyebrow"><Sparkles/> منصة التشغيل المالي والبياني</span><h1>من البيانات إلى<br/> <em>القرار.</em></h1><p>منصة موحّدة لتحليل الأداء المالي والتشغيلي، وأتمتة المطابقة لاتخاذ قرارات أدق وأسرع.</p><div className="hero-actions"><button className="primary" onClick={()=>go("signup")}>ابدأ الآن <ArrowLeft/></button><button className="secondary" onClick={()=>go("overview")}>شاهد المنصة</button></div><small className="trust"><ShieldCheck/> قراءة وتحليل فقط، دون أي صلاحية مالية</small></div>
+    <div className="hero-stage">
+      <div className="hero-art">
+        <img src="/nova-hero-transparent.png" alt="فريق سعودي يتابع أداءه المالي من لوحة واحدة"/>
+        {/* Drawn in the illustration's own pixels (1536×1024): each card feeds a port on the dashboard's frame. */}
+        <svg className="hero-links" viewBox="0 0 1536 1024" aria-hidden="true">
+          <path d="M399 128 C520 128 540 360 622 360"/><path d="M399 394 C500 394 540 455 622 455"/><path d="M806 133 C806 220 820 230 820 305"/><path d="M1330 174 C1330 250 1250 260 1240 305"/>
+          <g className="ports"><circle cx="622" cy="360" r="9"/><circle cx="622" cy="455" r="9"/><circle cx="820" cy="305" r="9"/><circle cx="1240" cy="305" r="9"/></g>
+        </svg>
+        <div className="hero-stat sales"><header><ReceiptText/><small>المبيعات</small></header><b>168,096<small>ر.س</small></b><footer><em>↑ 12.4%</em><svg className="spark" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path d="M0 16 L12 13 L24 15 L36 9 L48 11 L60 6 L72 8 L84 4 L100 2" vectorEffect="non-scaling-stroke"/></svg></footer></div>
+        <div className="hero-stat matched"><header><GitCompareArrows/><small>مطابق تلقائيًا</small></header><b>99%</b><footer><i><u/></i></footer></div>
+        <div className="hero-stat alert"><header><CircleAlert/><small>يحتاج قرارك</small></header><b>1,554<small>ر.س</small></b><footer><em>9 فروقات</em></footer></div>
+        <div className="hero-stat received"><header><Landmark/><small>وصل للبنك</small></header><b>153,398<small>ر.س</small></b><footer><em className="neutral">9,237 في الطريق</em></footer></div>
+      </div>
+    </div>
+  </section>
   <section className="core-value wrap"><div className="section-title"><div><Kicker>ما الذي يقدمه NOVA؟</Kicker><h2>اعرف الفرق. خذ حقك.</h2></div><p>نعرض ما يستحق انتباهك فقط.</p></div><div className="core-value-grid"><article><span><GitCompareArrows/></span><small>01</small><h3>المطابقة الذكية</h3><p>ما سجله نظامك، ما استلمته، والفرق.</p><button onClick={()=>go("reconciliation")}>شاهد مثالًا <ArrowLeft/></button></article><article><span><ReceiptText/></span><small>02</small><h3>ملف المطالبة</h3><p>كل الأدلة جاهزة في مطالبة واحدة.</p><button onClick={()=>go("alerts")}>شاهد مثالًا <ArrowLeft/></button></article></div></section>
   <section className="simple-how wrap"><div><Kicker>كيف تعمل</Kicker><h2>اربط. نطابق. ننبّه.</h2></div><ol><li><b>1</b><span><strong>اربط مرة واحدة</strong><small>ونعمل في الخلفية.</small></span></li><li><b>2</b><span><strong>نطابق تلقائيًا</strong><small>كل مصادر عملك.</small></span></li><li><b>3</b><span><strong>راجع المهم فقط</strong><small>بلا جداول يومية.</small></span></li></ol></section>
   <section className="simple-pricing wrap"><div><Kicker>الأسعار</Kicker><h2>اختر حسب حجم عملك.</h2><p>كل الخطط تشمل الربط والمطابقة والتنبيهات.</p></div><div className="price-cards"><article><h3>بداية</h3><b>149 <small>ر.س / شهر</small></b><span>مصدران · وحدة عمل واحدة</span><button className="secondary" onClick={()=>go("signup")}>ابدأ مجانًا</button></article><article className="featured"><em>الأكثر اختيارًا</em><h3>نمو</h3><b>299 <small>ر.س / شهر</small></b><span>5 مصادر · 5 وحدات عمل</span><button className="primary" onClick={()=>go("signup")}>ابدأ مجانًا</button></article><article><h3>أعمال</h3><b>599 <small>ر.س / شهر</small></b><span>مصادر أكثر · 20 وحدة عمل</span><button className="secondary" onClick={()=>go("signup")}>ابدأ مجانًا</button></article></div></section>
