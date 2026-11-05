@@ -216,6 +216,9 @@ body{font-family:"Cairo",sans-serif;font-size:var(--body);line-height:1.65}
 .hero-note.alert-note small{color:var(--amber)}
 .hero-note b{font-size:max(14px,2.7cqi);letter-spacing:-.3px}
 .hero-note b small{color:var(--slate);font-size:max(9px,1.3cqi);font-weight:500}
+/* One caption line under the value, the same on both cards. */
+.hero-note p{margin:0;color:#6f7b7a;font-size:max(9px,1.2cqi)}
+.hero-note.alert-note p{color:var(--amber)}
 .hero-note.margin{left:83%;top:1%;animation-delay:.45s}
 .hero-note.margin em{font-style:normal;color:var(--accent);font-size:max(8.5px,1.25cqi);font-weight:700}
 @media(prefers-reduced-motion:reduce){.hero-art>img,.hero-note{animation:none}}
@@ -237,7 +240,7 @@ body{font-family:"Cairo",sans-serif;font-size:var(--body);line-height:1.65}
   .hero-note,.hero-note.alert-note,.hero-note.margin{position:relative;inset:auto;left:auto;top:auto;width:auto;gap:3px;padding:9px 11px;white-space:normal}
   .hero-note small{font-size:10.5px}
   .hero-note b{font-size:17px}
-  .hero-note.margin em{font-size:10px}
+  .hero-note.margin em,.hero-note p{font-size:10px}
 }
 /* Profitability summary on the money-flow page. */
 .profit-card{margin-top:14px}

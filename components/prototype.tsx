@@ -25,8 +25,8 @@ function MarketingSimple({go}:{go:(r:R)=>void}){return <main className="simple-s
       <svg className="hero-blob" viewBox="0 0 600 460" aria-hidden="true"><path d="M318 22c86 6 176 52 222 128 44 72 40 170-8 236-46 64-132 78-212 70-74-8-150-14-206-66C58 338 26 252 48 180 72 104 134 50 204 32c36-9 76-12 114-10z"/><circle cx="520" cy="70" r="26"/><circle cx="70" cy="390" r="16"/><circle className="ring" cx="300" cy="235" r="228"/><circle className="ring" cx="560" cy="380" r="34"/></svg>
       <div className="hero-art">
         <img src="/nova-hero-transparent.png" alt="فريق سعودي يتابع أداءه المالي من لوحة واحدة"/>
-        <div className="hero-note alert-note"><header><small>يحتاج انتباهك</small><span className="dot"/></header><b>1,554<small> ر.س</small></b></div>
-        <div className="hero-note margin"><header><small>هامش الربح</small><em>↑ 2.1%</em></header><b>31.9%</b></div>
+        <div className="hero-note alert-note"><header><small>يحتاج انتباهك</small><span className="dot"/></header><b>1,554<small> ر.س</small></b><p>تسوية ناقصة من بوابة الدفع</p></div>
+        <div className="hero-note margin"><header><small>هامش الربح</small></header><b>31.9%</b><p><em>↑ 2.1%</em> عن الشهر الماضي</p></div>
       </div>
     </div>
   </section>
