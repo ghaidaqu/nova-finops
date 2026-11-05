@@ -138,6 +138,32 @@ button.icon{border:1px solid var(--line);background:white;border-radius:9px;widt
   .source-list article{flex-wrap:wrap}
   .app>header span button{padding:0 9px}
 }
+
+/* Homepage hero — centered, quiet, and built around NOVA's original Saudi illustration. */
+.simple-site{background:#fcfaf7}
+.simple-hero{display:block;position:relative;overflow:hidden;padding:34px 24px 18px;text-align:center}
+.simple-hero .hero-copy{position:relative;z-index:2;max-width:690px;margin:0 auto;padding:0}
+.hero-copy .eyebrow{display:inline-flex;background:#edf2ed;color:#174d56;border:0;padding:7px 14px;border-radius:999px;font-weight:700}
+.hero-copy h1{margin:15px 0 12px;color:#004b57;font-size:clamp(48px,4.8vw,68px);line-height:1.13;letter-spacing:-3px}
+.hero-copy h1 em{color:#004b57;font-style:normal}
+.hero-copy>p{max-width:590px!important;margin:0 auto!important;color:#5c6868;font-size:17px!important;line-height:1.9!important}
+.hero-copy .hero-actions{display:flex;justify-content:center;width:auto;margin-top:24px;gap:11px}
+.hero-copy .hero-actions button{min-width:166px;min-height:52px;border-radius:14px}
+.hero-copy .trust{display:inline-flex;margin-top:13px}
+.hero-stage{position:relative;isolation:isolate;max-width:1120px;min-height:470px;margin:8px auto 0}
+.hero-stage:before{content:"";position:absolute;z-index:-1;left:50%;bottom:5%;width:720px;height:380px;transform:translateX(-50%);border-radius:46% 54% 38% 42%/42% 38% 58% 54%;background:#eef5f1}
+.hero-stage:after{content:"";position:absolute;z-index:-1;left:50%;bottom:8%;width:900px;height:235px;transform:translateX(-50%);border:1px solid #e6ece6;border-radius:50%;opacity:.8}
+.hero-stage .hero-visual{position:relative;z-index:1;display:flex;justify-content:center;align-items:flex-end;width:100%;min-height:0;margin:0}
+.hero-stage .hero-visual img{display:block;width:min(63vw,740px);max-width:740px;margin:0}
+.hero-stat{position:absolute;z-index:2;display:flex;align-items:flex-start;gap:11px;width:186px;padding:15px 16px;background:#fff;border:1px solid #f0ede8;border-radius:18px;box-shadow:0 9px 26px rgba(16,65,68,.07);text-align:right;opacity:0;animation:hero-card-in .55s cubic-bezier(.2,.8,.2,1) forwards}
+.hero-stat svg{flex:0 0 auto;width:22px;height:22px;margin-top:3px;color:#11979a;stroke-width:1.8}
+.hero-stat span{display:block;flex:1}.hero-stat small,.hero-stat b,.hero-stat em{display:block}.hero-stat small{color:#62706e;font-size:12px}.hero-stat b{margin:1px 0 0;color:#102d33;font-family:Arial,sans-serif;font-size:23px;line-height:1.3;letter-spacing:-.5px;direction:ltr}.hero-stat em{color:#28a34b;font-family:Arial,sans-serif;font-size:12px;font-style:normal;font-weight:700;direction:ltr}.hero-stat.revenue{left:1%;top:19%;animation-delay:.08s}.hero-stat.profit{right:1%;top:19%;animation-delay:.16s}.hero-stat.automation{left:-4%;top:60%;animation-delay:.24s}.hero-stat.margin{right:-4%;top:60%;animation-delay:.32s}
+.hero-stat i{display:block;width:100%;height:7px;margin-top:7px;overflow:hidden;background:#e9eeee;border-radius:999px}.hero-stat i u{display:block;width:96%;height:100%;background:#15979a;border-radius:inherit}
+@keyframes hero-card-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.hero-stat{opacity:1;animation:none}}
+@media(max-width:760px){
+  .simple-hero{padding:14px 20px 46px;overflow:hidden}.simple-hero .hero-copy{max-width:100%}.hero-copy .eyebrow{font-size:11px;padding:6px 11px}.hero-copy h1{margin:12px 0 10px;font-size:42px;letter-spacing:-2px;line-height:1.18}.hero-copy>p{font-size:14px!important;line-height:1.85!important}.hero-copy .hero-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:20px}.hero-copy .hero-actions button{min-width:0;min-height:48px;padding:9px 7px;font-size:13px}.hero-stage{display:grid;grid-template-columns:1fr 1fr;gap:10px;min-height:0;margin-top:20px}.hero-stage:before{width:360px;height:235px;bottom:28%;opacity:.85}.hero-stage:after{display:none}.hero-stage .hero-visual{grid-column:1/-1;order:-1}.hero-stage .hero-visual img{width:min(100%,390px);max-width:390px}.hero-stat{position:relative;inset:auto!important;width:auto;min-width:0;padding:12px;border-radius:14px;gap:8px;box-shadow:0 6px 18px rgba(16,65,68,.05);animation-delay:0s}.hero-stat svg{width:18px;height:18px}.hero-stat small{font-size:10px}.hero-stat b{font-size:18px}.hero-stat em{font-size:10px}.hero-stat i{margin-top:5px;height:5px}
+}
 .simple-bottom p>span{display:flex;align-items:center;gap:7px}
 .simple-bottom p>span>svg{color:var(--green);width:16px}
 /* On phones the alert list stays browsable above the selected alert. */
