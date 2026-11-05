@@ -4,7 +4,7 @@ import type { SourceKind } from "./reconcile";
 // that settles to the bank. A few real-world problems are planted so every screen has
 // something to show: sales the gateway never reported, a gateway fee above the contract,
 // a short bank payout, a payout that never arrived, a duplicate charge, and a deposit
-// with no matching sale.
+// with no matching sale. Six weeks of running costs give the profit margin something to work on.
 
 export type DemoRow = { date: string; description: string; amount: number; reference?: string; fee?: number; branch?: string };
 export type DemoSource = { name: string; kind: SourceKind; feeBps: number; feeFixedHalalas: number; lagDays: number; rows: DemoRow[] };
@@ -64,9 +64,18 @@ export function demoSources(endDate: string, days = 42): DemoSource[] {
   bank.push({ date: iso(end - 26 * DAY), description: "تحويل وارد", amount: 5000, reference: "TRF-88120" });
   for (let d = days; d >= 0; d -= 14) bank.push({ date: iso(end - d * DAY), description: "إيجار ومصاريف تشغيل", amount: -6500, reference: `EXP-${d}` });
 
+  const expenses: DemoRow[] = [];
+  const cost = (d: number, description: string, amount: number, reference: string) => expenses.push({ date: iso(end - d * DAY), description, amount, reference });
+  for (const [i, d] of [days - 2, days - 32].entries()) {
+    cost(d, "رواتب الموظفين", 28000, `PAY-${i + 1}`);
+    cost(d - 1, "إيجار المحل والمستودع", 9000, `RENT-${i + 1}`);
+    cost(d - 5, "كهرباء وماء واتصالات", 1800, `UTIL-${i + 1}`);
+  }
+  for (let w = 0, d = days - 3; d >= 0; d -= 7, w++) cost(d, "مشتريات بضاعة من المورد", 6000, `PO-${w + 1}`);
   return [
     { name: "المبيعات (تجريبي)", kind: "sales", feeBps: 0, feeFixedHalalas: 0, lagDays: 2, rows: sales },
     { name: "بوابة الدفع (تجريبي)", kind: "payments", feeBps: 250, feeFixedHalalas: 100, lagDays: 2, rows: gateway },
     { name: "كشف البنك (تجريبي)", kind: "bank", feeBps: 0, feeFixedHalalas: 0, lagDays: 2, rows: bank },
+    { name: "المصاريف (تجريبي)", kind: "expenses", feeBps: 0, feeFixedHalalas: 0, lagDays: 0, rows: expenses },
   ];
 }

@@ -7,8 +7,8 @@ import type { SourceKind } from "@/lib/reconcile";
 // Amounts arrive in riyals from the client and are stored in halalas.
 export type ImportRow = { date?: string; description?: string; amount?: number; expected?: number | null; reference?: string; fee?: number | null; branch?: string; method?: string };
 
-export const sourceKinds: SourceKind[] = ["sales", "payments", "bank"];
-export const defaultLag: Record<SourceKind, number> = { sales: 3, payments: 2, bank: 2 };
+export const sourceKinds: SourceKind[] = ["sales", "payments", "bank", "expenses"];
+export const defaultLag: Record<SourceKind, number> = { sales: 3, payments: 2, bank: 2, expenses: 0 };
 
 // Anything beyond 10 billion riyals in one row is a parsing mistake, not a transaction.
 const halalas = (value: unknown) => (typeof value === "number" && Number.isFinite(value) && Math.abs(value) < 1e10 ? Math.round(value * 100) : null);

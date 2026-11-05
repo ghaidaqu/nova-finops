@@ -171,80 +171,78 @@ body{font-family:"Cairo",sans-serif;font-size:var(--body);line-height:1.65}
   .wrap{padding-inline:24px}.simple-nav{height:60px}.core-value,.simple-how,.simple-pricing{padding-block:54px}.core-value .section-title{margin-bottom:20px}.core-value h2,.simple-how h2,.simple-pricing h2{font-size:var(--title)}.core-value-grid{gap:10px}.core-value-grid article{min-height:205px;padding:20px}.core-value-grid h3{font-size:19px;margin:16px 0 4px}.core-value-grid p{font-size:14px}.core-value-grid button{right:20px;bottom:18px;font-size:13px}.core-value-grid article>small{left:20px;top:20px}.simple-how{gap:22px}.simple-how li{padding:14px 0}.simple-pricing{padding-top:52px}.price-cards{gap:10px}.price-cards article{padding:18px}.simple-cta{padding:58px 20px}.simple-footer{padding-block:25px;font-size:11px}.auth{display:block;min-height:100svh}.auth>section{min-height:100svh;padding:25px 24px}.auth-card{max-width:340px}.auth-card>.mark{width:28px;height:28px;margin-bottom:18px}.auth-card h1{font-size:27px;line-height:1.35}.auth-card>p{font-size:14px;margin-bottom:18px}.auth>aside{display:none}.page{padding:24px 18px 48px}.page-head{display:block;margin-bottom:18px}.page-head h1{font-size:24px}.page-head p{font-size:13px}.simple-kpis b,.metric>b{font-size:23px}.one-decision>div{padding:18px}.one-decision h2{font-size:18px}.one-decision p{font-size:13px}.onboard-card{padding:26px 20px;min-height:0}.onboard-card h1{font-size:26px}.progress{margin:25px 18px 20px}.progress div small{font-size:10px}.app>header{height:58px;padding:0 16px;font-size:12px}
 }
 
-/* Homepage hero (one block): message and actions beside the Saudi illustration, whose four
-   metric cards are wired into its dashboard. Everything sits in the first screen. */
-.simple-site .simple-nav{height:60px}
-.simple-site .simple-hero{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(320px,.85fr) minmax(0,1.15fr);align-items:center;gap:28px;max-width:1240px;margin:0 auto;padding:1svh 32px 24px;text-align:right;overflow:hidden}
-/* Faint eight-point star lattice. */
-.simple-site .simple-hero:before{content:"";position:absolute;inset:0;z-index:-1;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='%230b5f63' stroke-opacity='.09'%3E%3Crect x='17' y='17' width='22' height='22'/%3E%3Crect x='17' y='17' width='22' height='22' transform='rotate(45 28 28)'/%3E%3C/g%3E%3C/svg%3E");-webkit-mask:radial-gradient(ellipse 55% 70% at 30% 50%,#000 25%,transparent 75%);mask:radial-gradient(ellipse 55% 70% at 30% 50%,#000 25%,transparent 75%)}
+/* Homepage hero (one block). Clean fintech style: a light canvas with one soft colour wash,
+   ink text, a single teal accent for the main action, and the Saudi illustration on one soft
+   shape as the visual. Fits the first screen. */
+.simple-site{--ink:#0f2f33;--slate:#5f6b6b;--hair:#e4ebe9;--accent:#0e7c7b;--accent-soft:#e7f4f1;--amber:#b86a1d;background:#fbfcfc;overflow-x:clip}
+.simple-site .simple-nav{position:relative;z-index:2;height:60px}
+.simple-site .simple-hero{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(320px,.85fr) minmax(0,1.15fr);align-items:center;gap:32px;max-width:1240px;margin:0 auto;padding:1svh 32px 28px;text-align:right}
+/* Background: a soft mint field rising from the illustration's side, cool and warm tints at the
+   edges, and a faint dot grid that fades out around the visual. */
+.simple-site .simple-hero:before{content:"";position:absolute;z-index:-2;inset:-80px -10% 0;background:radial-gradient(55% 75% at 8% 52%,#dcefe9,#e9f5f1 45%,transparent 72%),radial-gradient(28% 38% at 88% 12%,#e8eff9,transparent 70%),radial-gradient(24% 30% at 62% 96%,#f4eee2,transparent 70%)}
+.simple-site .simple-hero:after{content:"";position:absolute;z-index:-1;inset:-60px 0 0;background-image:radial-gradient(#0e7c7b2e 1.1px,transparent 1.4px);background-size:22px 22px;-webkit-mask:radial-gradient(ellipse 48% 62% at 28% 52%,#000 30%,transparent 72%);mask:radial-gradient(ellipse 48% 62% at 28% 52%,#000 30%,transparent 72%)}
 
-.hero-copy{max-width:520px}
-.hero-copy .eyebrow{display:inline-flex;align-items:center;gap:7px;margin:0;padding:5px 12px;border:1px solid #d6e5e1;border-radius:999px;background:#fff;color:#174d56;font-size:12px;font-weight:700}
-.hero-copy .eyebrow svg{width:14px;height:14px;color:#11979a}
-.hero-copy h1{margin:14px 0 10px;color:#004b57;font-size:clamp(38px,7.2svh,60px);line-height:1.12;letter-spacing:-1.5px}
-.hero-copy h1 em{font-style:normal;color:#11979a}
-.hero-copy>p{margin:0;color:#5c6868;font-size:16px;line-height:1.75}
-.hero-actions{display:flex;gap:10px;margin-top:22px}
-.hero-actions button{min-width:150px;min-height:46px;border-radius:12px;font-size:15px}
-.hero-copy .trust{display:inline-flex;align-items:center;gap:6px;margin-top:10px;color:#62706e;font-size:12px}
-.hero-copy .trust svg{width:14px;height:14px;color:#11979a}
+.hero-copy{max-width:500px}
+.hero-copy .eyebrow{display:inline-flex;align-items:center;gap:8px;margin:0;padding:5px 12px;border:1px solid var(--hair);border-radius:999px;background:#fff;color:var(--slate);font-size:12.5px;font-weight:600}
+.hero-copy .eyebrow svg{width:13px;height:13px;color:var(--accent)}
+.hero-copy h1{margin:16px 0 12px;color:var(--ink);font-size:clamp(36px,6.8svh,56px);font-weight:600;line-height:1.15;letter-spacing:-.5px}
+.hero-copy h1 em{font-style:normal;color:var(--accent)}
+.hero-copy>p{margin:0;color:var(--slate);font-size:16.5px;line-height:1.8}
+.hero-actions{display:flex;gap:10px;margin-top:26px}
+.hero-actions button{min-width:0;min-height:44px;padding:0 22px;border-radius:999px;font-size:15px;font-weight:600}
+.simple-site .hero-actions .primary{border:0;background:var(--accent);color:#fff;box-shadow:0 1px 2px #0e7c7b33}
+.simple-site .hero-actions .primary:hover{background:#0b6968;transform:none}
+.simple-site .hero-actions .secondary{border:1px solid var(--hair);background:#fff;color:var(--ink)}
+.simple-site .hero-actions .secondary:hover{border-color:#c9d6d3;background:#fff}
+.hero-copy .trust{display:inline-flex;align-items:center;gap:6px;margin-top:14px;color:#7a8685;font-size:12.5px}
+.hero-copy .trust svg{width:14px;height:14px;color:var(--accent)}
 
-.hero-stage{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:min(calc(100svh - 92px),600px);min-height:380px}
-.hero-stage:after{content:"";position:absolute;z-index:-1;left:50%;top:50%;width:80%;height:80%;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(closest-side,#e3f1ec,transparent)}
-/* The illustration's box: cards and connectors are placed in its own proportions. */
-.hero-art{position:relative;width:min(100%,calc(min(100svh - 92px,600px) * 1.45));aspect-ratio:1536/1024;container-type:inline-size}
-.hero-art>img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
-.hero-links{position:absolute;inset:0;z-index:1;width:100%;height:100%;overflow:visible;pointer-events:none}
-.hero-links path{fill:none;stroke:#11979a;stroke-width:3;stroke-dasharray:2 10;stroke-linecap:round;opacity:.75;animation:hero-flow 1.2s linear infinite}
-.hero-links .ports circle{fill:#11979a;stroke:#fff;stroke-width:4;transform-box:fill-box;transform-origin:center;animation:hero-port 2.4s ease-out infinite}
-.hero-links .ports circle:nth-child(2){animation-delay:.6s}.hero-links .ports circle:nth-child(3){animation-delay:1.2s}.hero-links .ports circle:nth-child(4){animation-delay:1.8s}
-@keyframes hero-flow{to{stroke-dashoffset:-24}}
-@keyframes hero-port{0%{filter:drop-shadow(0 0 0 #11979a88)}40%{filter:drop-shadow(0 0 10px #11979acc)}100%{filter:drop-shadow(0 0 0 #11979a00)}}
+.hero-stage{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:min(calc(100svh - 92px),620px);min-height:380px}
+.hero-blob{position:absolute;z-index:0;width:92%;height:92%;inset:4%}
+.hero-blob path{fill:#e3f2ee}
+.hero-blob circle{fill:#d3ebe5}
+.hero-blob circle:last-of-type{fill:#f1ece2}
+.hero-blob .ring{fill:none;stroke:#9fcfc6;stroke-width:1.5;stroke-dasharray:3 6}
+/* The illustration's own box, so the two cards sit in its empty corners at any size. */
+.hero-art{position:relative;z-index:1;width:min(100%,calc(min(100svh - 92px,620px) * 1.5));aspect-ratio:1536/1024;container-type:inline-size}
+.hero-art>img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;animation:hero-card-in .7s ease-out both}
+/* Cards size to their content. */
+.hero-note{position:absolute;z-index:2;display:flex;flex-direction:column;gap:.35cqi;width:17cqi;min-width:118px;padding:1.1cqi 1.4cqi;white-space:nowrap;text-align:right;background:#ffffff6b;-webkit-backdrop-filter:blur(12px) saturate(150%);backdrop-filter:blur(12px) saturate(150%);border:1px solid #ffffffb3;border-radius:12px;box-shadow:0 8px 24px #0037700d;animation:hero-card-in .6s ease-out .3s both}
+.hero-note header{display:flex;align-items:center;justify-content:space-between;gap:1cqi}
+.hero-note small{color:var(--slate);font-size:max(9px,1.35cqi);font-weight:600}
+.hero-note b{color:var(--ink);font-weight:600;line-height:1.3;font-variant-numeric:tabular-nums}
+.hero-note.alert-note{left:0;top:8%}
+.hero-note.alert-note .dot{width:1.2cqi;height:1.2cqi;min-width:8px;min-height:8px;border-radius:50%;background:#e08a2e;box-shadow:0 0 0 .6cqi #e08a2e26}
+.hero-note.alert-note small{color:var(--amber)}
+.hero-note b{font-size:max(14px,2.7cqi);letter-spacing:-.3px}
+.hero-note b small{color:var(--slate);font-size:max(9px,1.3cqi);font-weight:500}
+.hero-note.margin{left:83%;top:1%;animation-delay:.45s}
+.hero-note.margin em{font-style:normal;color:var(--accent);font-size:max(8.5px,1.25cqi);font-weight:700}
+@media(prefers-reduced-motion:reduce){.hero-art>img,.hero-note{animation:none}}
 
-/* Metric cards: same size and anatomy — label, value, then one small signal. */
-.hero-stat{position:absolute;z-index:2;display:flex;flex-direction:column;gap:.8cqi;width:25cqi;padding:1.5cqi 1.8cqi;text-align:right;background:#ffffffee;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1px solid #dfeae6;border-inline-start:3px solid #11979a;border-radius:13px;box-shadow:0 12px 30px #0b3b3a17;opacity:0;animation:hero-card-in .6s ease-out forwards}
-.hero-stat header{display:flex;align-items:center;gap:1cqi}
-.hero-stat header svg{flex:0 0 auto;width:3.6cqi;height:3.6cqi;padding:.75cqi;border-radius:1cqi;background:#e9f6f2;color:#11979a}
-.hero-stat header small{color:#5c6868;font-size:max(10px,1.7cqi);font-weight:600}
-.hero-stat b{color:#0d2b2b;font-size:max(14px,3cqi);line-height:1.1;letter-spacing:-.3px;white-space:nowrap}
-.hero-stat b small{margin-inline-start:3px;color:#62706e;font-size:max(9px,1.6cqi);font-weight:600}
-.hero-stat footer{display:flex;align-items:center;gap:1.2cqi;min-height:2.6cqi}
-.hero-stat em{flex:0 0 auto;padding:1px 8px;border-radius:999px;background:#e8f6ef;color:#2f8a5b;font-size:max(9px,1.55cqi);font-style:normal;font-weight:700}
-.hero-stat em.neutral{background:#eef2f1;color:#5c6868}
-.hero-stat .spark{flex:1;height:2.6cqi}
-.hero-stat .spark path{fill:none;stroke:#11979a;stroke-width:1.6}
-.hero-stat i{flex:1;height:6px;overflow:hidden;border-radius:9px;background:#e7efed}
-.hero-stat i u{display:block;width:99%;height:100%;border-radius:9px;background:linear-gradient(90deg,#11979a,#5cc6a8)}
-.hero-stat.alert{border-inline-start-color:#e28a3b}
-.hero-stat.alert header svg{background:#fff1e6;color:#d9822b}
-.hero-stat.alert em{background:#fff1e6;color:#b9651c}
-/* Placed in the empty parts of the illustration: never over a person. */
-.hero-stat.sales{left:-3%;top:2%;animation-delay:.1s}
-.hero-stat.matched{left:-3%;top:28%;animation-delay:.25s}
-.hero-stat.alert{left:38%;top:-8%;animation-delay:.4s}
-.hero-stat.received{left:81%;top:-4%;animation-delay:.55s}
-@media(prefers-reduced-motion:reduce){.hero-stat{opacity:1;animation:none}.hero-links path,.hero-links .ports circle{animation:none}}
-
-/* Phones: message first, then the illustration, then the four cards as a 2x2 grid. */
+/* Phones: message first, then the illustration on its soft shape. */
 @media(max-width:760px){
-  .simple-site .simple-hero{display:flex;flex-direction:column;gap:12px;padding:4px 14px 18px;text-align:center}
-  .simple-site .simple-hero:before{-webkit-mask:radial-gradient(ellipse 80% 50% at 50% 60%,#000 25%,transparent 75%);mask:radial-gradient(ellipse 80% 50% at 50% 60%,#000 25%,transparent 75%)}
+  .simple-site .simple-hero{display:flex;flex-direction:column;gap:14px;padding:4px 16px 20px;text-align:center}
+  .simple-site .simple-hero:before{inset:0;background:radial-gradient(90% 35% at 50% 75%,#dff1ec,transparent 72%),radial-gradient(60% 25% at 50% 8%,#eaf0f9,transparent 70%)}
+  .simple-site .simple-hero:after{inset:0;-webkit-mask:radial-gradient(ellipse 70% 30% at 50% 75%,#000 30%,transparent 72%);mask:radial-gradient(ellipse 70% 30% at 50% 75%,#000 30%,transparent 72%)}
   .hero-copy{max-width:none}
-  .hero-copy h1{font-size:30px;letter-spacing:-1px;margin:10px 0 6px}
-  .hero-copy>p{font-size:14px;line-height:1.7}
-  .hero-actions{display:grid;grid-template-columns:1fr 1fr;margin-top:14px}
-  .hero-actions button{min-width:0;min-height:44px;font-size:14px}
+  .hero-copy h1{font-size:30px;margin:12px 0 8px}
+  .hero-copy>p{font-size:14.5px;line-height:1.75}
+  .hero-actions{display:grid;grid-template-columns:1fr 1fr;margin-top:16px}
+  .hero-actions button{min-height:44px;font-size:14px;padding:0 12px}
   .hero-stage{display:block;height:auto;min-height:0}
+  .hero-blob{inset:0 4% auto;height:min(62vw,280px)}
   .hero-art{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;aspect-ratio:auto}
-  .hero-art>img{position:relative;grid-column:1/-1;height:200px}
-  .hero-links{display:none}
-  .hero-stat,.hero-stat.sales,.hero-stat.matched,.hero-stat.alert,.hero-stat.received{position:relative;inset:auto;left:auto;top:auto;width:auto}
-  .hero-stat{gap:5px;padding:10px 11px}
-  .hero-stat header{gap:6px}
-  .hero-stat header svg{width:22px;height:22px;padding:5px;border-radius:7px}
-  .hero-stat header small{font-size:11px}
-  .hero-stat b{font-size:18px}
-  .hero-stat b small,.hero-stat em{font-size:10px}
-  .hero-stat footer{gap:6px;min-height:16px}
-  .hero-stat .spark{height:16px}
+  .hero-art>img{position:relative;grid-column:1/-1;height:min(62vw,280px)}
+  .hero-note,.hero-note.alert-note,.hero-note.margin{position:relative;inset:auto;left:auto;top:auto;width:auto;gap:3px;padding:9px 11px;white-space:normal}
+  .hero-note small{font-size:10.5px}
+  .hero-note b{font-size:17px}
+  .hero-note.margin em{font-size:10px}
 }
+/* Profitability summary on the money-flow page. */
+.profit-card{margin-top:14px}
+.settlement-one header em.ok{color:var(--green);background:#e7f4ef}
+.settlement-one.profit-card footer{background:#eef7f3;color:var(--ink)}
+.simple-bottom p .link{border:0;background:none;color:var(--green);padding:0;font:inherit;font-size:13px}
+.hero-note,.hero-note *{line-height:1.35}
+@media(max-width:760px){.hero-copy .eyebrow{font-size:11px;white-space:nowrap}}

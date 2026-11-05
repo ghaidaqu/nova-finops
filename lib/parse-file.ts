@@ -11,7 +11,7 @@ export type Table = { headers: string[]; rows: Cell[][]; headerIndex: number };
 export type Field = "date" | "amount" | "credit" | "debit" | "direction" | "reference" | "description" | "fee" | "tax" | "branch" | "method" | "status" | "expected";
 export type Mapping = Partial<Record<Field, number>>;
 export type ParsedRow = { date: string; amount: number; reference?: string; description?: string; fee?: number; branch?: string; method?: string; expected?: number };
-export type Kind = "sales" | "payments" | "bank";
+export type Kind = "sales" | "payments" | "bank" | "expenses";
 
 const toLatin = (text: string) => text.replace(/[٠-٩۰-۹]/g, (d) => String((d.charCodeAt(0) & 0xf) % 10)).replace(/٫/g, ".").replace(/٬/g, ",");
 
@@ -112,7 +112,7 @@ const rules: Record<Field, Rule> = {
     exclude: ["status", "حاله", "date", "تاريخ", "time", "type", "نوع", "amount", "مبلغ", "total", "اجمالي", "merchant id", "terminal", "batch", "customer", "عميل", "account", "حساب", "iban", "phone", "جوال", "قيمه"],
     exactOnly: ["id"],
   },
-  description: { names: ["description", "وصف", "بيان", "details", "تفاصيل", "تفاصيل عمليه", "narrative", "narration", "memo", "particulars", "remarks", "notes", "ملاحظات", "customer name", "اسم عميل", "customer", "عميل", "contact", "name"], exclude: ["date", "تاريخ", "id", "رقم", "phone", "جوال", "email"] },
+  description: { names: ["description", "وصف", "بيان", "بند", "details", "تفاصيل", "تفاصيل عمليه", "category", "تصنيف", "narrative", "narration", "memo", "particulars", "remarks", "notes", "ملاحظات", "customer name", "اسم عميل", "customer", "عميل", "contact", "name"], exclude: ["date", "تاريخ", "id", "رقم", "phone", "جوال", "email"] },
   fee: { names: ["fee", "fees", "processing fee", "transaction fee", "mdr fee", "mdr", "commission amount", "مبلغ عموله", "commission", "عموله", "رسوم", "رسوم معالجه", "رسوم بوابه", "charges", "platform fee", "service fee"], exclude: ["rate", "نسبه", "percent", "shipping", "شحن", "delivery", "توصيل", "vat", "tax", "ضريبه"] },
   tax: { names: ["vat on fee", "fee vat", "vat on fees", "vat on commission", "commission vat", "vat on mdr", "mdr vat", "tax on fee", "ضريبه رسوم", "ضريبه عموله"], exactOnly: ["tax", "vat", "ضريبه", "ضريبه قيمه مضافه"] },
   branch: { names: ["branch", "فرع", "store", "متجر", "location", "outlet", "shop", "channel", "قناه", "نقطه بيع"], exclude: ["sub", "فرعي", "id", "رقم", "store credit"] },
@@ -198,6 +198,7 @@ export function bestSheet(sheets: Sheet[]) {
 const signals = {
   bank: ["balance", "رصيد", "iban", "ايبان", "narrative", "narration", "posting date", "value date", "debit", "credit", "مدين", "داين", "cheque", "شيك", "withdrawal", "deposit", "ايداع", "سحب", "statement", "كشف", "bank", "بنك", "مصرف", "dr cr", "account statement", "كشف حساب"],
   payments: ["fee", "fees", "mdr", "رسوم", "عموله", "commission", "payout", "settlement", "تسويه", "gateway", "net", "صافي", "charge", "captured", "moyasar", "ميسر", "tap", "hyperpay", "paytabs", "stripe", "tabby", "tamara", "تابي", "تمارا", "jahez", "جاهز", "hungerstation", "هنقرستيشن", "keeta", "كيتا", "mrsool", "مرسول", "ninja", "نينجا", "toyou", "careem", "chefz"],
+  expenses: ["expense", "expenses", "مصروف", "مصاريف", "مصروفات", "cost", "costs", "تكلفه", "تكاليف", "رواتب", "salary", "salaries", "payroll", "ايجار", "rent", "مورد", "موردين", "supplier", "vendor", "مشتريات", "purchase", "purchases", "bill", "bills", "فواتير مشتريات", "category", "تصنيف", "بند"],
   sales: ["order", "طلب", "invoice", "فاتوره", "customer", "عميل", "branch", "فرع", "item", "صنف", "product", "منتج", "subtotal", "discount", "خصم", "shipping", "شحن", "pos", "cashier", "كاشير"],
 };
 
@@ -209,6 +210,9 @@ export function guessKind(fileName: string, headers: string[]): Kind {
   // A running balance or an IBAN only appears on bank statements.
   if (headers.map(normHeader).some((t) => /(^| )(balance|رصيد|iban|ايبان)( |$)/.test(t))) return "bank";
   if (bankStrong && hits(signals.bank) >= 2) return "bank";
+  // Expense files: named so, or full of cost words (suppliers, salaries, rent, categories).
+  const namedExpenses = /(^| )(مصروف|مصاريف|مصروفات|تكاليف|expense|expenses|costs)( |$)/.test(texts[0]);
+  if (namedExpenses || (hits(signals.expenses) >= 2 && hits(signals.expenses) > hits(signals.sales))) return "expenses";
   if (headers.some((h) => headerScore(h, "fee", "payments") > 0)) return "payments";
   return hits(signals.payments) > hits(signals.sales) ? "payments" : "sales";
 }

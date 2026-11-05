@@ -1,6 +1,6 @@
 "use client";
 import { Fragment, useState } from "react";
-import { ArrowLeft, Bell, Check, CircleAlert, Clock, CreditCard, FileSpreadsheet, GitCompareArrows, Landmark, LogOut, Plus, ReceiptText, Settings, ShieldCheck, Sparkles, Trash2, X } from "lucide-react";
+import { ArrowLeft, Bell, Check, CircleAlert, Clock, CreditCard, FileSpreadsheet, GitCompareArrows, Landmark, LogOut, Plus, ReceiptText, Settings, ShieldCheck, Sparkles, Trash2, TrendingDown, X } from "lucide-react";
 import type { SourceKind } from "@/lib/reconcile";
 import type { IssueStatus, SourceSummary, WorkspaceData } from "@/lib/workspace-data";
 import { callApi, counted, formatDay, formatSar, issueLabels, kindHelp, kindLabels, sectors, severityLabels, useNova } from "./data";
@@ -18,7 +18,15 @@ export function Loading() {
   return <div className="page"><div className="loading">{error ? <><CircleAlert /><p>{error}</p><button className="secondary" onClick={refresh}>حاول مرة أخرى</button></> : <p>جارٍ تحميل بياناتك…</p>}</div></div>;
 }
 
-const kindIcon = (kind: SourceKind) => (kind === "bank" ? <Landmark /> : kind === "payments" ? <CreditCard /> : <ReceiptText />);
+const kindIcon = (kind: SourceKind) => (kind === "bank" ? <Landmark /> : kind === "payments" ? <CreditCard /> : kind === "expenses" ? <TrendingDown /> : <ReceiptText />);
+
+// Profit only means something once costs are known: sales minus fees minus imported expenses.
+export function profitOf(t: WorkspaceData["totals"]) {
+  if (!t.expenses || !t.sales) return null;
+  const profit = t.sales - t.fees - t.expenses;
+  return { profit, margin: (profit / t.sales) * 100 };
+}
+const pct = (n: number) => `${n.toFixed(1)}%`;
 
 function StartHere({ openImport }: { openImport: () => void }) {
   const { call } = useNova();
@@ -67,6 +75,7 @@ export function Overview({ go, openImport }: { go: Go; openImport: () => void })
               <p><span>رسوم ومستقطعات</span><strong>{formatSar(t.fees)}</strong></p>
               {t.cash > 0 && <p><span>مبيعات نقدية (خارج المطابقة)</span><strong>{formatSar(t.cash)}</strong></p>}
               <p><span>في الطريق</span><strong>{formatSar(t.pending)}</strong></p>
+              {profitOf(t) ? <p><span>هامش الربح</span><strong>{pct(profitOf(t)!.margin)}</strong></p> : <p><span>هامش الربح</span><button className="link" onClick={openImport}>أضف ملف المصاريف</button></p>}
               <p><span>فروقات مفتوحة</span><strong className="red">{formatSar(t.openAmount)}</strong></p>
             </section>
           </div>
@@ -193,12 +202,17 @@ export function Analytics({ openImport }: { openImport: () => void }) {
   const t = data.totals;
   if (!t.records) return <div className="page"><Head title="التحليلات" copy="اتجاهات مبيعاتك وتحصيلك." /><StartHere openImport={openImport} /></div>;
   const salesDays = data.daily.filter((d) => d.sales).length || 1;
+  const profit = profitOf(t);
   return (
     <div className="page">
       <Head title="التحليلات" copy={`من ${formatDay(data.daily[0]?.date)} إلى ${formatDay(data.daily.at(-1)?.date || null)}.`} />
       <div className="metrics">
         <article className="metric"><span>المبيعات</span><b>{formatSar(t.sales)}</b><small>{counted(t.salesCount, "عمليات", "عملية")}</small></article>
-        <article className="metric"><span>متوسط اليوم</span><b>{formatSar(Math.round(t.sales / salesDays))}</b><small>على {counted(salesDays, "أيام", "يومًا")} فيها مبيعات</small></article>
+        {profit ? (
+          <article className="metric"><span>صافي الربح</span><b>{formatSar(profit.profit)}</b><small>هامش {pct(profit.margin)} بعد الرسوم والمصاريف</small></article>
+        ) : (
+          <article className="metric"><span>متوسط اليوم</span><b>{formatSar(Math.round(t.sales / salesDays))}</b><small>على {counted(salesDays, "أيام", "يومًا")} فيها مبيعات</small></article>
+        )}
         <article className="metric"><span>الرسوم</span><b>{formatSar(t.fees)}</b><small>{t.sales ? ((t.fees / t.sales) * 100).toFixed(1) : 0}% من المبيعات</small></article>
         <article className={t.openAmount ? "metric danger" : "metric"}><span>فروقات مفتوحة{t.openAmount > 0 && <CircleAlert />}</span><b>{formatSar(t.openAmount)}</b><small>{counted(t.openIssues, "تنبيهات", "تنبيهًا")}</small></article>
       </div>
@@ -233,6 +247,17 @@ export function MoneyFlow({ go, openImport }: { go: Go; openImport: () => void }
       <section className="card flow-card">
         <div className="waterfall">{steps.map(([label, value, cls]) => <div key={label} className={cls} style={{ height: `${Math.max(4, (Math.abs(value) / max) * 100)}%` }}><b>{formatSar(value)}</b><small>{label}</small></div>)}</div>
       </section>
+      {profitOf(t) ? (
+        <section className="settlement-one profit-card">
+          <header><b>الربحية</b><em className={profitOf(t)!.profit < 0 ? "" : "ok"}>هامش {pct(profitOf(t)!.margin)}</em></header>
+          <p><span>المبيعات</span><b>{formatSar(t.sales)}</b></p>
+          <p><span>الرسوم والعمولات</span><b>−{formatSar(t.fees)}</b></p>
+          <p><span>المصاريف</span><b>−{formatSar(t.expenses)}</b></p>
+          <footer><span>صافي الربح</span><b>{formatSar(profitOf(t)!.profit)}</b></footer>
+        </section>
+      ) : (
+        <div className="smart"><TrendingDown /><span><b>اعرف ربحك الحقيقي</b><p>أضف ملف المصاريف (الرواتب، الإيجار، الموردين) ونحسب صافي الربح وهامشه.</p></span></div>
+      )}
       {open.length > 0 && <div className="smart"><Sparkles /><span><b>{formatSar(t.openAmount)} تحتاج متابعة</b><p>منها {formatSar(sum(["missing"]))} لم تصل بعد موعدها، و{formatSar(sum(["short", "fee"]))} وصلت ناقصة أو بخصم زائد{sum(["duplicate", "expected"]) > 0 && <>، و{formatSar(sum(["duplicate", "expected"]))} تكرارات أو فروقات أخرى</>}.</p></span><button onClick={() => go("alerts")}>عرض التنبيهات <ArrowLeft /></button></div>}
     </div>
   );
@@ -267,7 +292,7 @@ function SourceSettings({ source, onClose }: { source: SourceSummary; onClose: (
         <div className="import-form">
           <label className="wide">نوع البيانات<select value={kind} onChange={(e) => setKind(e.target.value as SourceKind)}>{(Object.keys(kindLabels) as SourceKind[]).map((k) => <option key={k} value={k}>{kindLabels[k]}</option>)}</select></label>
           <small className="wide">{kindHelp[kind]}</small>
-          {kind !== "bank" && <><label>نسبة الرسوم المتفق عليها %<input inputMode="decimal" value={fee} onChange={(e) => setFee(e.target.value)} /></label><label>رسوم ثابتة لكل عملية (ر.س)<input inputMode="decimal" value={fixed} onChange={(e) => setFixed(e.target.value)} /></label></>}
+          {(kind === "sales" || kind === "payments") && <><label>نسبة الرسوم المتفق عليها %<input inputMode="decimal" value={fee} onChange={(e) => setFee(e.target.value)} /></label><label>رسوم ثابتة لكل عملية (ر.س)<input inputMode="decimal" value={fixed} onChange={(e) => setFixed(e.target.value)} /></label></>}
           {kind === "sales" && (
             <label className="wide">كيف يصلك مال هذا المصدر؟
               <select value={via} onChange={(e) => setVia(e.target.value as typeof via)}>
@@ -277,8 +302,8 @@ function SourceSettings({ source, onClose }: { source: SourceSummary; onClose: (
               </select>
             </label>
           )}
-          <label className="wide">مدة وصول المال بأيام العمل<input inputMode="numeric" value={lag} onChange={(e) => setLag(e.target.value)} /></label>
-          <small className="wide">{kind === "payments" ? "إذا كان التقرير يحتوي عمود رسوم نقارنه بالنسبة المتفق عليها، وإلا نحسب الرسوم منها." : kind === "sales" ? "«تلقائي»: يطابق عبر بوابة الدفع إن وجدت، إلا إذا حددت عمولة هنا فيطابق مع البنك مباشرة بعد خصمها. المبيعات النقدية لا تدخل المطابقة." : "نعتبر المبالغ الموجبة واردًا والسالبة مصروفات."}</small>
+          {kind !== "expenses" && <label className="wide">مدة وصول المال بأيام العمل<input inputMode="numeric" value={lag} onChange={(e) => setLag(e.target.value)} /></label>}
+          <small className="wide">{kind === "expenses" ? "نجمع المبالغ كمصاريف سواء كانت موجبة أو سالبة، ولا ندخلها في المطابقة." : kind === "payments" ? "إذا كان التقرير يحتوي عمود رسوم نقارنه بالنسبة المتفق عليها، وإلا نحسب الرسوم منها." : kind === "sales" ? "«تلقائي»: يطابق عبر بوابة الدفع إن وجدت، إلا إذا حددت عمولة هنا فيطابق مع البنك مباشرة بعد خصمها. المبيعات النقدية لا تدخل المطابقة." : "نعتبر المبالغ الموجبة واردًا والسالبة مصروفات."}</small>
         </div>
         {error && <p className="form-error">{error}</p>}
         <div className="modal-actions"><button className="secondary danger" onClick={remove}><Trash2 /> حذف المصدر</button><button className="primary" onClick={save}>حفظ <Check /></button></div>
@@ -300,7 +325,7 @@ export function Sources({ openImport }: { openImport: () => void }) {
         <section className="source-list">{data.sources.map((s) => (
           <article key={s.name}>
             <span className="logo">{kindIcon(s.kind)}</span>
-            <div><b>{s.name}</b><small>{kindLabels[s.kind]} · {counted(s.count, "عمليات", "عملية")} · {formatDay(s.from)} – {formatDay(s.to)}</small>{s.kind !== "bank" && s.feeBps + s.feeFixed > 0 && <em>رسوم متفق عليها {s.feeBps / 100}%{s.feeFixed ? ` + ${formatSar(s.feeFixed)}` : ""}</em>}</div>
+            <div><b>{s.name}</b><small>{kindLabels[s.kind]} · {counted(s.count, "عمليات", "عملية")} · {formatDay(s.from)} – {formatDay(s.to)}</small>{(s.kind === "sales" || s.kind === "payments") && s.feeBps + s.feeFixed > 0 && <em>رسوم متفق عليها {s.feeBps / 100}%{s.feeFixed ? ` + ${formatSar(s.feeFixed)}` : ""}</em>}</div>
             <button className="secondary" onClick={() => setAdding(s)}><Plus /> ملف</button>
             <button className="icon" onClick={() => setSettings(s)} aria-label="إعدادات"><Settings /></button>
           </article>

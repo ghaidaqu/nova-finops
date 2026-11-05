@@ -55,11 +55,12 @@ export function NovaProvider({ children, onUnauthorized }: { children: React.Rea
   return <NovaContext.Provider value={{ data, error, refresh, call }}>{children}</NovaContext.Provider>;
 }
 
-export const kindLabels: Record<SourceKind, string> = { sales: "مبيعات وفواتير", payments: "بوابة دفع أو منصة", bank: "كشف بنك" };
+export const kindLabels: Record<SourceKind, string> = { sales: "مبيعات وفواتير", payments: "بوابة دفع أو منصة", bank: "كشف بنك", expenses: "مصاريف وتكاليف" };
 export const kindHelp: Record<SourceKind, string> = {
   sales: "ما بعته أو فوترته: نقاط البيع، المتجر، الفواتير، تطبيقات التوصيل.",
   payments: "تقارير بوابات الدفع والمنصات التي تحصّل نيابة عنك، مع الرسوم إن وجدت.",
   bank: "كشف الحساب البنكي: ما وصل فعلًا إلى حسابك.",
+  expenses: "الرواتب والإيجار والموردين والمشتريات: نحسب منها صافي الربح وهامشه.",
 };
 export const issueLabels: Record<IssueType, string> = { missing: "مبلغ لم يصل", short: "دفع ناقص", fee: "رسوم زائدة", unknown: "وارد غير معروف", duplicate: "تكرار", expected: "فرق عن المتوقع" };
 export const severityLabels = { high: "عالي", medium: "متوسط", low: "منخفض" };

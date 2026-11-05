@@ -15,7 +15,7 @@ export type WorkspaceData = {
   user: { name: string; email: string };
   workspace: { name: string; sector: string | null; tolerance: number };
   sources: SourceSummary[];
-  totals: { records: number; sales: number; salesCount: number; cash: number; received: number; fees: number; pending: number; matchedSales: number; openIssues: number; openAmount: number };
+  totals: { records: number; sales: number; salesCount: number; cash: number; received: number; fees: number; expenses: number; pending: number; matchedSales: number; openIssues: number; openAmount: number };
   issueCounts: Record<IssueStatus, number>;
   // Set when the workspace holds more rows than one reconciliation reads (the newest are used).
   truncated: { read: number; stored: number } | null;

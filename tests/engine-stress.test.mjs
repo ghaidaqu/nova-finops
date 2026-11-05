@@ -174,7 +174,7 @@ test("only bank / only payments / payments+bank", () => {
 
 test("sales->bank with 18% delivery commission, daily payouts; totals", () => {
   const r = reconcile([txn("j1", "JAHEZ", "2026-10-01", 10000), txn("j2", "JAHEZ", "2026-10-01", 20000), txn("b", "BANK", "2026-10-03", 24600)], [cfg("JAHEZ", "sales", 1800, 0, 3), cfg("BANK", "bank")], T);
-  assert.deepEqual(r.totals, { sales: 30000, salesCount: 2, cash: 0, fees: 5400, received: 24600, pending: 0, matchedSales: 2 });
+  assert.deepEqual(r.totals, { sales: 30000, salesCount: 2, cash: 0, fees: 5400, expenses: 0, received: 24600, pending: 0, matchedSales: 2 });
 });
 
 // ---------- references ----------
@@ -268,7 +268,7 @@ test("totals for a hand-computed case", () => {
     txn("p1", "GW", "2026-10-01", 10000, { reference: "A", fee: 300 }), txn("p2", "GW", "2026-10-01", 20000, { reference: "B" }),
     txn("b1", "BANK", "2026-10-03", 29100), txn("b2", "BANK", "2026-10-06", -2000), txn("b3", "BANK", "2026-10-06", 777),
   ], [cfg("POS", "sales"), cfg("GW", "payments", 250, 100), cfg("BANK", "bank")], T);
-  assert.deepEqual(r.totals, { sales: 55000, salesCount: 4, cash: 0, fees: 900, received: 29877, pending: 30000, matchedSales: 2 });
+  assert.deepEqual(r.totals, { sales: 55000, salesCount: 4, cash: 0, fees: 900, expenses: 0, received: 29877, pending: 30000, matchedSales: 2 });
   assert.deepEqual(issuesOf(r), ["unknown:777[b3]"]);
 });
 

@@ -62,3 +62,25 @@ test("sample files import and reconcile end to end", async () => {
   const count = (t) => types.filter((x) => x === t).length;
   assert.deepEqual([count("missing"), count("short"), count("duplicate"), count("unknown"), count("fee")], [3, 1, 1, 2, 0]);
 });
+
+test("an expenses list is recognised and its item column becomes the description", async () => {
+  const { readFileSync } = await import("node:fs");
+  const { guessKind } = await import("../lib/parse-file.ts");
+  const table = toTable(parseCsv(readFileSync(new URL("../public/samples/expenses.csv", import.meta.url), "utf8")));
+  assert.equal(guessKind("expenses.csv", table.headers), "expenses");
+  assert.equal(guessKind("مصاريف أكتوبر.csv", ["التاريخ", "البيان", "المبلغ"]), "expenses");
+  const { rows } = toRows(table, guessMapping(table.headers, "expenses", table.rows));
+  assert.equal(rows.length, 12);
+  assert.equal(rows[0].description, "رواتب الموظفين");
+});
+
+test("demo profit margin is computed from sales, fees and expenses", async () => {
+  const { demoSources } = await import("../lib/demo-data.ts");
+  const { reconcile } = await import("../lib/reconcile.ts");
+  const sources = demoSources("2026-11-04");
+  const txns = sources.flatMap((s) => s.rows.map((r, i) => ({ id: `${s.kind}-${i}`, source: s.name, reference: r.reference ?? null, date: r.date, description: r.description, amount: Math.round(r.amount * 100), expected: null, fee: r.fee === undefined ? null : Math.round(r.fee * 100), branch: r.branch ?? null })));
+  const t = reconcile(txns, sources.map((s) => ({ name: s.name, kind: s.kind, feeBps: s.feeBps, feeFixed: s.feeFixedHalalas, lagDays: s.lagDays })), 100).totals;
+  assert.equal(t.expenses, 11360000);
+  const margin = ((t.sales - t.fees - t.expenses) / t.sales) * 100;
+  assert.ok(margin > 20 && margin < 40, `margin ${margin.toFixed(1)}%`);
+});

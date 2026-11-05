@@ -1,7 +1,7 @@
 "use client";
 import {useCallback,useEffect,useState} from "react";
 import {brand} from "@/src/config/brand";
-import {ArrowLeft,Bell,ChevronLeft,CircleAlert,Check,FileSpreadsheet,GitCompareArrows,Landmark,LayoutDashboard,LineChart,Link2,LogOut,Menu,ReceiptText,Settings,ShieldCheck,Sparkles,Wallet,X} from "lucide-react";
+import {ArrowLeft,Bell,ChevronLeft,CircleAlert,Check,FileSpreadsheet,GitCompareArrows,LayoutDashboard,LineChart,Link2,LogOut,Menu,ReceiptText,Settings,ShieldCheck,Sparkles,Wallet,X} from "lucide-react";
 import {NovaProvider,callApi,sectors,useNova} from "@/components/nova/data";
 import {ImportModal} from "@/components/nova/import-modal";
 import {Alerts,Analytics,ComingSoon,Loading,MoneyFlow,Overview,Reconciliation,SettingsPage,Sources} from "@/components/nova/screens";
@@ -19,19 +19,14 @@ function Brand(){return <span className="brand"><b>{brand.name}</b></span>}
 function MarketingSimple({go}:{go:(r:R)=>void}){return <main className="simple-site">
   <nav className="simple-nav wrap"><button onClick={()=>go("home")}><Brand/></button><div><button onClick={()=>go("login")}>دخول</button></div></nav>
   <section className="simple-hero wrap">
-    <div className="hero-copy"><span className="eyebrow"><Sparkles/> منصة التشغيل المالي والبياني</span><h1>من البيانات إلى<br/> <em>القرار.</em></h1><p>منصة موحّدة لتحليل الأداء المالي والتشغيلي، وأتمتة المطابقة لاتخاذ قرارات أدق وأسرع.</p><div className="hero-actions"><button className="primary" onClick={()=>go("signup")}>ابدأ الآن <ArrowLeft/></button><button className="secondary" onClick={()=>go("overview")}>شاهد المنصة</button></div><small className="trust"><ShieldCheck/> قراءة وتحليل فقط، دون أي صلاحية مالية</small></div>
+    <div className="hero-copy"><span className="eyebrow"><ShieldCheck/> المطابقة والتحليل المالي للأعمال السعودية</span><h1>من البيانات إلى<br/> <em>القرار.</em></h1><p>منصة موحّدة لتحليل الأداء المالي والتشغيلي، وأتمتة المطابقة لاتخاذ قرارات أدق وأسرع.</p><div className="hero-actions"><button className="primary" onClick={()=>go("signup")}>ابدأ الآن <ArrowLeft/></button><button className="secondary" onClick={()=>go("overview")}>شاهد المنصة</button></div><small className="trust"><ShieldCheck/> قراءة وتحليل فقط، دون أي صلاحية مالية</small></div>
     <div className="hero-stage">
+      {/* A soft organic shape behind the illustration, as in clean flat-illustration landing pages. */}
+      <svg className="hero-blob" viewBox="0 0 600 460" aria-hidden="true"><path d="M318 22c86 6 176 52 222 128 44 72 40 170-8 236-46 64-132 78-212 70-74-8-150-14-206-66C58 338 26 252 48 180 72 104 134 50 204 32c36-9 76-12 114-10z"/><circle cx="520" cy="70" r="26"/><circle cx="70" cy="390" r="16"/><circle className="ring" cx="300" cy="235" r="228"/><circle className="ring" cx="560" cy="380" r="34"/></svg>
       <div className="hero-art">
         <img src="/nova-hero-transparent.png" alt="فريق سعودي يتابع أداءه المالي من لوحة واحدة"/>
-        {/* Drawn in the illustration's own pixels (1536×1024): each card feeds a port on the dashboard's frame. */}
-        <svg className="hero-links" viewBox="0 0 1536 1024" aria-hidden="true">
-          <path d="M399 128 C520 128 540 360 622 360"/><path d="M399 394 C500 394 540 455 622 455"/><path d="M806 133 C806 220 820 230 820 305"/><path d="M1330 174 C1330 250 1250 260 1240 305"/>
-          <g className="ports"><circle cx="622" cy="360" r="9"/><circle cx="622" cy="455" r="9"/><circle cx="820" cy="305" r="9"/><circle cx="1240" cy="305" r="9"/></g>
-        </svg>
-        <div className="hero-stat sales"><header><ReceiptText/><small>المبيعات</small></header><b>168,096<small>ر.س</small></b><footer><em>↑ 12.4%</em><svg className="spark" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path d="M0 16 L12 13 L24 15 L36 9 L48 11 L60 6 L72 8 L84 4 L100 2" vectorEffect="non-scaling-stroke"/></svg></footer></div>
-        <div className="hero-stat matched"><header><GitCompareArrows/><small>مطابق تلقائيًا</small></header><b>99%</b><footer><i><u/></i></footer></div>
-        <div className="hero-stat alert"><header><CircleAlert/><small>يحتاج قرارك</small></header><b>1,554<small>ر.س</small></b><footer><em>9 فروقات</em></footer></div>
-        <div className="hero-stat received"><header><Landmark/><small>وصل للبنك</small></header><b>153,398<small>ر.س</small></b><footer><em className="neutral">9,237 في الطريق</em></footer></div>
+        <div className="hero-note alert-note"><header><small>يحتاج انتباهك</small><span className="dot"/></header><b>1,554<small> ر.س</small></b></div>
+        <div className="hero-note margin"><header><small>هامش الربح</small><em>↑ 2.1%</em></header><b>31.9%</b></div>
       </div>
     </div>
   </section>

@@ -12,7 +12,8 @@
 // out of a daily payout. What is left becomes pending (still inside its window), missing
 // (overdue) or an unknown incoming amount. Settlement windows skip the Saudi weekend.
 
-export type SourceKind = "sales" | "payments" | "bank";
+// Expenses are not reconciled; they turn sales into profit and margin.
+export type SourceKind = "sales" | "payments" | "bank" | "expenses";
 export type SettlesVia = "auto" | "payments" | "bank";
 
 export type Txn = {
@@ -68,6 +69,7 @@ export type Reconciliation = {
     salesCount: number;
     cash: number;
     fees: number;
+    expenses: number;
     received: number;
     pending: number;
     matchedSales: number;
@@ -497,6 +499,8 @@ export function reconcile(txns: Txn[], sourceConfigs: SourceConfig[], tolerance:
       salesCount: sales.length,
       cash: sales.filter((t) => isCash(t.method)).reduce((s, t) => s + t.amount, 0),
       fees,
+      // Expense files list costs either as positive amounts or as debits; both count as cost.
+      expenses: all.filter((t) => kindOf(t) === "expenses").reduce((s, t) => s + Math.abs(t.amount), 0),
       received,
       pending: pending.reduce((s, p) => s + p.amount, 0),
       matchedSales,
