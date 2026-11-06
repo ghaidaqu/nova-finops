@@ -33,8 +33,8 @@ function StartHere({ openImport }: { openImport: () => void }) {
   const [busy, setBusy] = useState(false);
   return (
     <section className="start-here">
-      <h2>ابدأ بملفاتك، أو جرّب ببيانات تجريبية.</h2>
-      <p>لا نحتاج ربطًا أو صلاحيات: صدّر من أنظمتك ملف المبيعات وكشف البنك (وتقرير بوابة الدفع إن وجد)، ونطابقها تلقائيًا.</p>
+      <h2>ابدأ بأي ملف لديك، أو جرّب بيانات تجريبية.</h2>
+      <p>حلّل مبيعاتك ومصاريفك وتحصيلك من أول ملف. وكلما أضفت مصادر أكثر، اكتملت الصورة وأصبحت المطابقة أدق.</p>
       <div className="start-grid">
         <button onClick={openImport}><FileSpreadsheet /><b>استيراد ملف</b><small>CSV أو Excel من أي نظام</small></button>
         <button disabled={busy} onClick={async () => { setBusy(true); try { await call("POST", "/api/demo"); } finally { setBusy(false); } }}><Sparkles /><b>{busy ? "جارٍ التحميل…" : "بيانات تجريبية"}</b><small>نشاط تجاري لستة أسابيع فيه مشاكل حقيقية</small></button>
@@ -45,7 +45,7 @@ function StartHere({ openImport }: { openImport: () => void }) {
 }
 
 export function Overview({ go, openImport }: { go: Go; openImport: () => void }) {
-  const { data } = useNova();
+  const { data, call } = useNova();
   if (!data) return <Loading />;
   const t = data.totals;
   const open = data.issues.filter((i) => i.status === "open");
@@ -53,7 +53,19 @@ export function Overview({ go, openImport }: { go: Go; openImport: () => void })
   return (
     <div className="page simple-dashboard">
       <Head title={`مرحبًا، ${data.user.name}`} copy={t.records ? `قراءة من ${counted(t.records, "عمليات", "عملية")} في ${counted(data.sources.length, "مصادر", "مصدر")}.` : "مساحة عملك جاهزة. أضف أول بياناتك."} />
-      {!t.records ? <StartHere openImport={openImport} /> : (
+      {!t.records ? <>
+        <section className="empty-import">
+          <div><b>ابدأ من بياناتك</b><p>أضف ملفًا واحدًا لتظهر لك مؤشرات الأداء والتحليلات هنا.</p></div>
+          <button className="primary" onClick={openImport}><FileSpreadsheet /> أضف ملفًا <ArrowLeft /></button>
+        </section>
+        <div className="simple-kpis empty-kpis">
+          <article><small>الإيرادات</small><b>0 ر.س</b><span>أضف ملف مبيعات أو فواتير</span></article>
+          <article><small>المصاريف</small><b>0 ر.س</b><span>أضف ملف مصاريف أو تكاليف</span></article>
+          <article><small>صافي الربح</small><b>0 ر.س</b><span>يظهر بعد إضافة الإيرادات والمصاريف</span></article>
+          <article><small>هامش الربح</small><b>0%</b><span>من بيانات مشروعك الفعلية</span></article>
+        </div>
+        <section className="one-decision empty-decision"><header><span><Sparkles /><b>بانتظار أول بياناتك</b></span></header><div><h2>كل رقم يبدأ بملف واحد.</h2><p>يمكنك البدء بالمبيعات، المصاريف، كشف البنك أو تقرير بوابة الدفع — لست بحاجة إلى كل الملفات الآن.</p></div><footer><button className="secondary" onClick={async () => { await call("POST", "/api/demo"); }}>جرّب بيانات تجريبية <ArrowLeft /></button></footer></section>
+      </> : (
         <>
           {data.truncated && <div className="smart"><CircleAlert /><span><b>بياناتك كبيرة</b><p>نطابق أحدث {counted(data.truncated.read, "عمليات", "عملية")} من أصل {counted(data.truncated.stored, "عمليات", "عملية")}. احذف المصادر القديمة إن لم تعد تحتاجها.</p></span></div>}
           <div className="simple-kpis">
@@ -319,7 +331,7 @@ export function Sources({ openImport }: { openImport: () => void }) {
   if (!data) return <Loading />;
   return (
     <div className="page simple-connections">
-      <Head title="مصادر البيانات" copy="كل مصدر هو ملف تصدير من أحد أنظمتك. أضف ملفات جديدة متى شئت، ولن نكرر ما استوردته." action={<button className="primary" onClick={openImport}><Plus /> مصدر جديد</button>} />
+      <Head title="مصادر البيانات" copy="أضف ملفًا من أي نظام أو اربطه تلقائيًا. لن نكرر ما استوردته." action={<button className="primary" onClick={openImport}><Plus /> مصدر جديد</button>} />
       <div className="read-only-banner"><ShieldCheck /><span><b>قراءة فقط</b><small>لا نعدّل أنظمتك ولا ننفذ أي عملية مالية. نحفظ العمليات اللازمة للمطابقة فقط.</small></span></div>
       {data.sources.length ? (
         <section className="source-list">{data.sources.map((s) => (
