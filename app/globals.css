@@ -324,3 +324,15 @@ a.primary.full{display:flex;justify-content:center;text-decoration:none;margin-t
   .hero-note p,.hero-note.margin em{font-size:9.5px}
 }
 @media(max-width:760px) and (max-height:700px){.hero-scroll{display:none}}
+/* Phones, simplified: no badge or trust line, a clean picture with nothing on it, and the two
+   cards as a small row under it (number only). Laptop is unchanged. */
+@media(max-width:760px){
+  .hero-copy .eyebrow,.hero-copy .trust{display:none}
+  .hero-copy h1{margin-top:0}
+  .hero-art{display:grid;grid-template-columns:1fr 1fr;gap:10px;aspect-ratio:auto}
+  .hero-art>img{position:relative;inset:auto;grid-column:1/-1;height:auto;aspect-ratio:1536/1024}
+  .hero-blob{inset:-3% 0 auto;height:calc((100vw - 32px)/1.5 + 12px)}
+  .hero-note,.hero-note.alert-note,.hero-note.margin{position:relative;inset:auto;width:auto;max-width:none;padding:10px 12px;translate:none}
+  .hero-note p{display:none}
+  .hero-note small{font-size:11px}.hero-note b{font-size:19px}
+}
