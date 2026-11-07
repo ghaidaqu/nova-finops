@@ -306,3 +306,21 @@ a.primary.full{display:flex;justify-content:center;text-decoration:none;margin-t
 @media(prefers-reduced-motion:reduce){.simple-site *,.simple-site :before,.simple-site :after{animation:none!important;transition:none!important}.simple-site.js .reveal{opacity:1;translate:none}.hero-copy,.hero-art,.hero-blob,.hero-note{translate:none!important;opacity:1!important}}
 .hero-copy h1{font-size:clamp(30px,4.6svh,42px);white-space:nowrap}
 @media(max-width:760px){.hero-copy h1{font-size:26px}}
+/* Phones get the laptop composition: message, then the picture with both cards floating on it,
+   with the same entrance, float and parallax; the login button stays in the header. */
+@media(max-width:760px){
+  .simple-site .simple-nav>div,.simple-site .simple-nav>div>button{display:block}
+  .simple-site .simple-hero{justify-content:center;gap:18px;padding:72px 16px 84px;text-align:right}
+  .hero-copy{display:flex;flex-direction:column;align-items:flex-start}
+  .hero-copy h1{font-size:28px}
+  .hero-actions{width:100%}
+  .hero-art{display:block;position:relative;width:100%;aspect-ratio:1536/1024;container-type:inline-size}
+  .hero-art>img{position:absolute;inset:0;width:100%;height:100%}
+  .hero-blob{inset:-4% 0 auto;width:100%;height:108%}
+  .hero-note,.hero-note.alert-note,.hero-note.margin{position:absolute;width:38%;max-width:150px;min-width:0;padding:8px 10px;gap:2px;white-space:nowrap}
+  .hero-note.alert-note{left:0;top:2%;translate:0 calc(var(--p,0)*-90px)}
+  .hero-note.margin{left:auto;right:0;top:-6%;translate:0 calc(var(--p,0)*-45px)}
+  .hero-note small{font-size:10px}.hero-note b{font-size:16px}.hero-note b small{font-size:9.5px}
+  .hero-note p,.hero-note.margin em{font-size:9.5px}
+}
+@media(max-width:760px) and (max-height:700px){.hero-scroll{display:none}}
